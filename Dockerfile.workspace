@@ -1,0 +1,21 @@
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y curl make docker.io bash git
+
+# Instalacja kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x kubectl && mv kubectl /usr/local/bin/
+
+# Instalacja kind
+RUN curl -Lo /usr/local/bin/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64 && \
+    chmod +x /usr/local/bin/kind
+
+# Instalacja Helm
+RUN curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Instalacja Skaffold
+RUN curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64 && \
+    chmod +x skaffold && mv skaffold /usr/local/bin/
+
+WORKDIR /workspace
+CMD ["sleep", "infinity"]

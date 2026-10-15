@@ -1,0 +1,14 @@
+apiVersion: skaffold/v4beta7
+kind: Config
+build:
+  local:
+    push: false
+  artifacts:
+    - image: backend-gateway
+      context: backend/api-gateway
+
+deploy:
+  helm:
+    releases:
+      - name: moj-system
+        chartPath: helm-chart

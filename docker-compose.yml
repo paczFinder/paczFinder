@@ -1,0 +1,12 @@
+services:
+  k8s-workspace:
+    build:
+      context: .
+      dockerfile: Dockerfile.workspace
+    container_name: dev-workspace
+    volumes:
+      - .:/workspace:z
+      - /var/run/docker.sock:/var/run/docker.sock:z
+    network_mode: host
+    command: >
+      bash -c "make up"

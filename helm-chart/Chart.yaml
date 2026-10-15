@@ -1,0 +1,4 @@
+apiVersion: v2
+name: moj-system
+description: Mikroserwisy
+version: 0.1.0
