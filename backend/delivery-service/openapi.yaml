@@ -1,0 +1,700 @@
+---
+openapi: 3.1.0
+components:
+  schemas:
+    AddDeliveriesToTripRequest:
+      type: object
+      required:
+      - deliveryIds
+      properties:
+        deliveryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+            exclusiveMinimum: 0
+          minItems: 1
+    AddDeliveryToTripRequest:
+      type: object
+      required:
+      - deliveryId
+      properties:
+        deliveryId:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+    AssignCourierRequest:
+      type: object
+      required:
+      - keycloakUserId
+      properties:
+        keycloakUserId:
+          type: string
+          pattern: \S
+    ChangeTripVehicleRequest:
+      type: object
+      required:
+      - vehicleId
+      properties:
+        vehicleId:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+    CreateDeliveryRequest:
+      type: object
+      required:
+      - recipientName
+      - recipientPhone
+      - street
+      - buildingNumber
+      - postalCode
+      - city
+      - country
+      - latitude
+      - longitude
+      - size
+      properties:
+        recipientName:
+          type: string
+          pattern: \S
+          maxLength: 100
+        recipientPhone:
+          type: string
+          pattern: \S
+          maxLength: 20
+        street:
+          type: string
+          pattern: \S
+          maxLength: 100
+        buildingNumber:
+          type: string
+          pattern: \S
+          maxLength: 10
+        apartmentNumber:
+          type: string
+          maxLength: 10
+        postalCode:
+          type: string
+          pattern: \S
+          maxLength: 10
+        city:
+          type: string
+          pattern: \S
+          maxLength: 100
+        country:
+          type: string
+          pattern: \S
+          maxLength: 60
+        latitude:
+          type: number
+          maximum: 90.0
+          minimum: -90.0
+        longitude:
+          type: number
+          maximum: 180.0
+          minimum: -180.0
+        size:
+          $ref: "#/components/schemas/DeliverySize"
+    CreateTripRequest:
+      type: object
+      required:
+      - vehicleId
+      properties:
+        vehicleId:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+    CreateVehicleRequest:
+      type: object
+      required:
+      - brand
+      - model
+      - registrationNumber
+      - capacity
+      properties:
+        brand:
+          type: string
+          pattern: \S
+          maxLength: 50
+        model:
+          type: string
+          pattern: \S
+          maxLength: 50
+        registrationNumber:
+          type: string
+          pattern: \S
+          maxLength: 10
+        capacity:
+          type: integer
+          format: int32
+          exclusiveMinimum: 0
+        courierKeycloakId:
+          type: string
+          maxLength: 255
+    DeliveryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        recipientName:
+          type: string
+        recipientPhone:
+          type: string
+        street:
+          type: string
+        buildingNumber:
+          type: string
+        apartmentNumber:
+          type: string
+        postalCode:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+        size:
+          $ref: "#/components/schemas/DeliverySize"
+        status:
+          $ref: "#/components/schemas/DeliveryStatus"
+    DeliverySize:
+      type: string
+      enum:
+      - S
+      - M
+      - L
+    DeliveryStatus:
+      type: string
+      enum:
+      - ADDED
+      - IN_DELIVERY
+      - DELIVERED
+    TripResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        vehicleId:
+          type: integer
+          format: int64
+        vehicleBrand:
+          type: string
+        vehicleModel:
+          type: string
+        registrationNumber:
+          type: string
+        vehicleCapacity:
+          type: integer
+          format: int32
+        courierKeycloakId:
+          type: string
+        deliveryCount:
+          type: integer
+          format: int32
+        usedCapacity:
+          type: integer
+          format: int32
+        status:
+          $ref: "#/components/schemas/TripStatus"
+    TripStatus:
+      type: string
+      enum:
+      - ADDED
+      - FINISHED
+    VehicleResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        brand:
+          type: string
+        model:
+          type: string
+        registrationNumber:
+          type: string
+        capacity:
+          type: integer
+          format: int32
+        active:
+          type: boolean
+        courierKeycloakId:
+          type: string
+paths:
+  /deliveries:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeliveryResponse"
+      summary: Find All
+      tags:
+      - Delivery Resource
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeliveryRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Delivery Resource
+  /deliveries/available:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeliveryResponse"
+      summary: Find Available
+      tags:
+      - Delivery Resource
+  /deliveries/{id}:
+    put:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDeliveryRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryResponse"
+        "400":
+          description: Bad Request
+      summary: Update
+      tags:
+      - Delivery Resource
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryResponse"
+      summary: Find By Id
+      tags:
+      - Delivery Resource
+    delete:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Delete
+      tags:
+      - Delivery Resource
+  /trips:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TripResponse"
+      summary: Find All
+      tags:
+      - Trip Resource
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTripRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Trip Resource
+  /trips/{id}:
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TripResponse"
+      summary: Find By Id
+      tags:
+      - Trip Resource
+    delete:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Delete
+      tags:
+      - Trip Resource
+  /trips/{id}/deliveries:
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DeliveryResponse"
+      summary: Find Deliveries
+      tags:
+      - Trip Resource
+    post:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddDeliveryToTripRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TripResponse"
+        "400":
+          description: Bad Request
+      summary: Add Delivery
+      tags:
+      - Trip Resource
+  /trips/{id}/deliveries/batch:
+    post:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddDeliveriesToTripRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TripResponse"
+        "400":
+          description: Bad Request
+      summary: Add Deliveries
+      tags:
+      - Trip Resource
+  /trips/{id}/finish:
+    post:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TripResponse"
+      summary: Finish
+      tags:
+      - Trip Resource
+  /trips/{id}/vehicle:
+    patch:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeTripVehicleRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TripResponse"
+      summary: Change Vehicle
+      tags:
+      - Trip Resource
+  /vehicles:
+    get:
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VehicleResponse"
+      summary: Find All
+      tags:
+      - Vehicle Resource
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVehicleRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Vehicle Resource
+  /vehicles/{id}:
+    put:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVehicleRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+        "400":
+          description: Bad Request
+      summary: Update
+      tags:
+      - Vehicle Resource
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+      summary: Find By Id
+      tags:
+      - Vehicle Resource
+    delete:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Delete
+      tags:
+      - Vehicle Resource
+  /vehicles/{id}/activate:
+    patch:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Activate
+      tags:
+      - Vehicle Resource
+  /vehicles/{id}/courier:
+    delete:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+      summary: Unassign Courier
+      tags:
+      - Vehicle Resource
+    patch:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignCourierRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VehicleResponse"
+      summary: Assign Courier
+      tags:
+      - Vehicle Resource
+  /vehicles/{id}/deactivate:
+    delete:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Deactivate
+      tags:
+      - Vehicle Resource
+info:
+  title: delivery-service API
+  version: 1.0.0-SNAPSHOT
