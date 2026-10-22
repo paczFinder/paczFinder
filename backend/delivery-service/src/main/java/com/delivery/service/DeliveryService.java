@@ -3,10 +3,13 @@ package com.delivery.service;
 import com.delivery.dto.CreateDeliveryRequest;
 import com.delivery.dto.DeliveryResponse;
 import com.delivery.entity.Delivery;
+import com.delivery.entity.Trip;
 import com.delivery.enums.DeliveryStatus;
 import com.delivery.repository.DeliveryRepository;
+import com.delivery.repository.TripRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.Collection;
@@ -16,9 +19,11 @@ import java.util.List;
 public class DeliveryService {
 
     private final DeliveryRepository deliveryRepository;
+    private final TripRepository tripRepository;
 
-    public DeliveryService(DeliveryRepository deliveryRepository) {
+    public DeliveryService(DeliveryRepository deliveryRepository, TripRepository tripRepository) {
         this.deliveryRepository = deliveryRepository;
+        this.tripRepository = tripRepository;
     }
 
     public List<DeliveryResponse> findAll() {
@@ -27,7 +32,6 @@ public class DeliveryService {
                 .map(DeliveryResponse::from)
                 .toList();
     }
-
 
     public List<DeliveryResponse> findAvailable() {
         return deliveryRepository.list("status", DeliveryStatus.ADDED)
@@ -43,18 +47,7 @@ public class DeliveryService {
     @Transactional
     public DeliveryResponse create(CreateDeliveryRequest request) {
         Delivery delivery = new Delivery();
-
-        delivery.recipientName = request.recipientName();
-        delivery.recipientPhone = request.recipientPhone();
-        delivery.street = request.street();
-        delivery.buildingNumber = request.buildingNumber();
-        delivery.apartmentNumber = request.apartmentNumber();
-        delivery.postalCode = request.postalCode();
-        delivery.city = request.city();
-        delivery.country = request.country();
-        delivery.latitude = request.latitude().doubleValue();
-        delivery.longitude = request.longitude().doubleValue();
-        delivery.size = request.size();
+        applyRequestToDelivery(delivery, request);
         delivery.status = DeliveryStatus.ADDED;
 
         deliveryRepository.persist(delivery);
@@ -66,19 +59,26 @@ public class DeliveryService {
     public DeliveryResponse update(Long id, CreateDeliveryRequest request) {
         Delivery delivery = getDelivery(id);
 
-        delivery.recipientName = request.recipientName();
-        delivery.recipientPhone = request.recipientPhone();
-        delivery.street = request.street();
-        delivery.buildingNumber = request.buildingNumber();
-        delivery.apartmentNumber = request.apartmentNumber();
-        delivery.postalCode = request.postalCode();
-        delivery.city = request.city();
-        delivery.country = request.country();
-        delivery.latitude = request.latitude().doubleValue();
-        delivery.longitude = request.longitude().doubleValue();
-        delivery.size = request.size();
+        if (delivery.status == DeliveryStatus.DELIVERED) {
+            throw new BadRequestException("Cannot update a delivered delivery");
+        }
+
+        applyRequestToDelivery(delivery, request);
 
         return DeliveryResponse.from(delivery);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Delivery delivery = getDelivery(id);
+
+        List<Trip> trips = tripRepository.findByDeliveryId(id);
+
+        for (Trip trip : trips) {
+            trip.deliveries.remove(delivery);
+        }
+
+        deliveryRepository.delete(delivery);
     }
 
     public int calculateLoadUnits(Collection<Delivery> deliveries) {
@@ -95,5 +95,27 @@ public class DeliveryService {
         }
 
         return delivery;
+    }
+
+    private void applyRequestToDelivery(Delivery delivery, CreateDeliveryRequest request) {
+        delivery.recipientName = request.recipientName().trim();
+        delivery.recipientPhone = request.recipientPhone().trim();
+        delivery.street = request.street().trim();
+        delivery.buildingNumber = request.buildingNumber().trim();
+        delivery.apartmentNumber = normalizeString(request.apartmentNumber());
+        delivery.postalCode = request.postalCode().trim();
+        delivery.city = request.city().trim();
+        delivery.country = request.country().trim();
+        delivery.latitude = request.latitude().doubleValue();
+        delivery.longitude = request.longitude().doubleValue();
+        delivery.size = request.size();
+    }
+
+    private String normalizeString(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }
