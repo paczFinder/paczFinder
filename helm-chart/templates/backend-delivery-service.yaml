@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-delivery-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-delivery-service
+  template:
+    metadata:
+      labels:
+        app: backend-delivery-service
+    spec:
+      containers:
+        - name: backend-delivery-service
+          image: backend-delivery-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: QUARKUS_PROFILE
+              value: "kubernetes"
+          envFrom:
+            - configMapRef:
+                name: delivery-db-config
+            - secretRef:
+                name: delivery-db-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-delivery-service
+spec:
+  type: NodePort
+  selector:
+    app: backend-delivery-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30081

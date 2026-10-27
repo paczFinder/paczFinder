@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: delivery-db-config
+data:
+  DB_HOST: "delivery-db"
+  DB_NAME: "delivery_db"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: delivery-db-secret
+type: Opaque
+stringData:
+  DB_USERNAME: "delivery_user"
+  DB_PASSWORD: "delivery_secret_pass"
