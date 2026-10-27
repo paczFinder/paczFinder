@@ -8,5 +8,3 @@ services:
       - .:/workspace:z
       - /var/run/docker.sock:/var/run/docker.sock:z
     network_mode: host
-    command: >
-      bash -c "make up"

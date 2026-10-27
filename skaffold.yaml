@@ -1,14 +1,39 @@
 apiVersion: skaffold/v4beta7
 kind: Config
+metadata:
+  name: paczfinder
+
 build:
   local:
     push: false
   artifacts:
     - image: backend-gateway
       context: backend/api-gateway
+      docker:
+        dockerfile: Dockerfile
+
+    - image: backend-delivery-service
+      context: backend/delivery-service
+      docker:
+        dockerfile: Dockerfile
 
 deploy:
   helm:
     releases:
       - name: moj-system
         chartPath: helm-chart
+        recreatePods: true
+
+portForward:
+  - resourceType: service
+    resourceName: backend-gateway-service
+    port: 8080
+    localPort: 8080
+  - resourceType: service
+    resourceName: backend-delivery-service
+    port: 8080
+    localPort: 8081 # localhost:8081
+  - resourceType: service
+    resourceName: delivery-db
+    port: 5432
+    localPort: 5433 # localhost:5433

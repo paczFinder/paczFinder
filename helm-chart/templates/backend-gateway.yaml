@@ -18,6 +18,9 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kubernetes"
 ---
 apiVersion: v1
 kind: Service
@@ -30,4 +33,4 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30080 # dostęp pod http://plocalhost:30080
+      nodePort: 30080 # dostęp pod http://localhost:30080
