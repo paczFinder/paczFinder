@@ -81,12 +81,6 @@ public class DeliveryService {
         deliveryRepository.delete(delivery);
     }
 
-    public int calculateLoadUnits(Collection<Delivery> deliveries) {
-        return deliveries.stream()
-                .mapToInt(delivery -> delivery.size.getLoadUnits())
-                .sum();
-    }
-
     private Delivery getDelivery(Long id) {
         Delivery delivery = deliveryRepository.findById(id);
 
