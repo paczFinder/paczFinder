@@ -4,15 +4,15 @@ import com.delivery.entity.Trip;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class TripRepository implements PanacheRepository<Trip> {
 
-    public List<Trip> findByDeliveryId(Long deliveryId) {
+    public Optional<Trip> findByDeliveryId(Long deliveryId) {
         return find(
-                "select distinct t from Trip t join t.deliveries d where d.id = ?1",
+                "select t from Trip t join t.deliveries d where d.id = ?1",
                 deliveryId
-        ).list();
+        ).singleResultOptional();
     }
 }

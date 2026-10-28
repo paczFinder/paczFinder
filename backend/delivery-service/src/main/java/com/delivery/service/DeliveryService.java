@@ -12,8 +12,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class DeliveryService {
@@ -72,11 +72,8 @@ public class DeliveryService {
     public void delete(Long id) {
         Delivery delivery = getDelivery(id);
 
-        List<Trip> trips = tripRepository.findByDeliveryId(id);
-
-        for (Trip trip : trips) {
-            trip.deliveries.remove(delivery);
-        }
+        Optional<Trip> trip = tripRepository.findByDeliveryId(id);
+        trip.ifPresent(value -> value.deliveries.remove(delivery));
 
         deliveryRepository.delete(delivery);
     }
