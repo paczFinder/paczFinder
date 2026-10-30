@@ -1,12 +1,16 @@
 # Delivery Service
 
-Microservice responsible for managing deliveries, vehicles and courier trips in PaczFinder.
+Microservice do zarządzania dostawami, kursami i pojazdami w PaczFinder.
 
 ## Run
 
 ```powershell
 mvn quarkus:dev
 ```
+
+Lokalnie:
+- aplikacja działa na porcie `8081`
+- PostgreSQL działa na porcie `5433`
 
 ## Tests
 
@@ -24,45 +28,45 @@ mvn test
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/deliveries` | Get all deliveries |
-| GET | `/deliveries/available` | Get available deliveries |
-| GET | `/deliveries/{id}` | Get delivery by ID |
-| POST | `/deliveries` | Create delivery |
-| PUT | `/deliveries/{id}` | Update delivery |
-| DELETE | `/deliveries/{id}` | Delete delivery |
+| GET | `/deliveries?page=0&size=20` | Pobiera listę dostaw z paginacją |
+| GET | `/deliveries/available?page=0&size=20` | Pobiera dostępne dostawy z paginacją |
+| GET | `/deliveries/{id}` | Pobiera dostawę po ID |
+| POST | `/deliveries` | Tworzy nową dostawę |
+| PUT | `/deliveries/{id}` | Aktualizuje dostawę |
+| DELETE | `/deliveries/{id}` | Usuwa dostawę |
 
 ### Trips — `/trips`
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/trips` | Get all trips |
-| POST | `/trips` | Create trip |
-| GET | `/trips/{id}` | Get trip by ID |
-| DELETE | `/trips/{id}` | Delete trip |
-| GET | `/trips/{id}/deliveries` | Get trip deliveries |
-| POST | `/trips/{id}/deliveries` | Add one delivery to trip |
-| POST | `/trips/{id}/deliveries/batch` | Add multiple deliveries to trip |
-| POST | `/trips/{id}/finish` | Finish trip |
-| PATCH | `/trips/{id}/vehicle` | Change trip vehicle |
+| GET | `/trips?page=0&size=20` | Pobiera listę kursów z paginacją |
+| POST | `/trips` | Tworzy nowy kurs |
+| GET | `/trips/{id}` | Pobiera kurs po ID |
+| DELETE | `/trips/{id}` | Usuwa kurs |
+| GET | `/trips/{id}/deliveries` | Pobiera dostawy przypisane do kursu |
+| POST | `/trips/{id}/deliveries` | Dodaje jedną dostawę do kursu |
+| POST | `/trips/{id}/deliveries/batch` | Dodaje wiele dostaw do kursu |
+| POST | `/trips/{id}/finish` | Kończy kurs |
+| PATCH | `/trips/{id}/vehicle` | Zmienia pojazd przypisany do kursu |
 
 ### Vehicles — `/vehicles`
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | `/vehicles` | Get all vehicles |
-| POST | `/vehicles` | Create vehicle (optional `courierKeycloakId`) |
-| GET | `/vehicles/{id}` | Get vehicle by ID |
-| PUT | `/vehicles/{id}` | Update vehicle |
-| DELETE | `/vehicles/{id}` | Delete vehicle |
-| PATCH | `/vehicles/{id}/activate` | Activate vehicle |
-| DELETE | `/vehicles/{id}/deactivate` | Deactivate vehicle |
-| PATCH | `/vehicles/{id}/courier` | Assign courier to vehicle |
-| DELETE | `/vehicles/{id}/courier` | Unassign courier from vehicle |
+| GET | `/vehicles?page=0&size=20` | Pobiera listę pojazdów z paginacją |
+| POST | `/vehicles` | Tworzy nowy pojazd |
+| GET | `/vehicles/{id}` | Pobiera pojazd po ID |
+| PUT | `/vehicles/{id}` | Aktualizuje pojazd |
+| DELETE | `/vehicles/{id}` | Usuwa pojazd |
+| PATCH | `/vehicles/{id}/activate` | Aktywuje pojazd |
+| DELETE | `/vehicles/{id}/deactivate` | Dezaktywuje pojazd |
+| PATCH | `/vehicles/{id}/courier` | Przypisuje kuriera do pojazdu |
+| DELETE | `/vehicles/{id}/courier` | Usuwa przypisanie kuriera |
 
 ## Database Schema
 
 ```mermaid
-erDiagram
+ erDiagram
     VEHICLES ||--o{ TRIPS : "assigned to"
     TRIPS ||--o{ DELIVERIES : contains
 

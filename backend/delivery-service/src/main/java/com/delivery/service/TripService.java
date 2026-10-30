@@ -5,6 +5,7 @@ import com.delivery.dto.AddDeliveryToTripRequest;
 import com.delivery.dto.ChangeTripVehicleRequest;
 import com.delivery.dto.CreateTripRequest;
 import com.delivery.dto.DeliveryResponse;
+import com.delivery.dto.PaginatedResponse;
 import com.delivery.dto.TripResponse;
 import com.delivery.entity.Delivery;
 import com.delivery.entity.Trip;
@@ -41,11 +42,23 @@ public class TripService {
         this.deliveryRepository = deliveryRepository;
     }
 
-    public List<TripResponse> findAll() {
-        return tripRepository.listAll()
-                .stream()
-                .map(TripResponse::from)
-                .toList();
+    public PaginatedResponse<TripResponse> findAll(int page, int size) {
+        int pageIndex = Math.max(page, 0);
+        int pageSize = Math.max(size, 1);
+
+        List<Trip> trips = tripRepository.findPaginated(pageIndex, pageSize);
+        long totalElements = tripRepository.count();
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+
+        return new PaginatedResponse<>(
+                trips.stream()
+                        .map(TripResponse::from)
+                        .toList(),
+                totalElements,
+                pageIndex,
+                pageSize,
+                totalPages
+        );
     }
 
     public TripResponse findById(Long id) {
