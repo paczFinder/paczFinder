@@ -10,9 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.util.HashSet;
@@ -34,11 +33,7 @@ public class Trip {
     @Column(name = "status", nullable = false, length = 20)
     public TripStatus status = TripStatus.ADDED;
 
-    @ManyToMany
-    @JoinTable(
-            name = "trip_deliveries",
-            joinColumns = @JoinColumn(name = "trip_id"),
-            inverseJoinColumns = @JoinColumn(name = "delivery_id")
-    )
+    @OneToMany
+    @JoinColumn(name = "trip_id")
     public Set<Delivery> deliveries = new HashSet<>();
 }

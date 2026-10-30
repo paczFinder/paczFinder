@@ -175,6 +175,63 @@ components:
       - ADDED
       - IN_DELIVERY
       - DELIVERED
+    PaginatedResponseDeliveryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/DeliveryResponse"
+        totalElements:
+          type: integer
+          format: int64
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+    PaginatedResponseTripResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/TripResponse"
+        totalElements:
+          type: integer
+          format: int64
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+    PaginatedResponseVehicleResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/VehicleResponse"
+        totalElements:
+          type: integer
+          format: int64
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
     TripResponse:
       type: object
       properties:
@@ -230,15 +287,26 @@ components:
 paths:
   /deliveries:
     get:
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 20
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DeliveryResponse"
+                $ref: "#/components/schemas/PaginatedResponseDeliveryResponse"
       summary: Find All
       tags:
       - Delivery Resource
@@ -262,15 +330,26 @@ paths:
       - Delivery Resource
   /deliveries/available:
     get:
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 20
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/DeliveryResponse"
+                $ref: "#/components/schemas/PaginatedResponseDeliveryResponse"
       summary: Find Available
       tags:
       - Delivery Resource
@@ -338,15 +417,26 @@ paths:
       - Delivery Resource
   /trips:
     get:
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 20
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/TripResponse"
+                $ref: "#/components/schemas/PaginatedResponseTripResponse"
       summary: Find All
       tags:
       - Trip Resource
@@ -524,15 +614,26 @@ paths:
       - Trip Resource
   /vehicles:
     get:
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 20
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/VehicleResponse"
+                $ref: "#/components/schemas/PaginatedResponseVehicleResponse"
       summary: Find All
       tags:
       - Vehicle Resource
