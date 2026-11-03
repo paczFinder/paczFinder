@@ -8,20 +8,27 @@ import {
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import PersonAddAlt1RoundedIcon from "@mui/icons-material/PersonAddAlt1Rounded";
 import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
-import keycloak from "../keycloak";
+import { useNavigate } from "react-router-dom";
+
+const primaryButtonSx = {
+    bgcolor: "#2563eb",
+    color: "#ffffff",
+    py: "15px",
+    px: "30px",
+    mb: 1,
+    borderRadius: "8px",
+    textTransform: "none",
+    fontSize: "1rem",
+    fontWeight: 600,
+    boxShadow: "0 8px 20px rgba(37, 99, 235, 0.25)",
+    "&:hover": {
+        bgcolor: "#1d4ed8",
+        boxShadow: "0 10px 24px rgba(37, 99, 235, 0.35)",
+    },
+};
 
 export default function WelcomePage() {
-    const handleLogin = (): void => {
-        void keycloak.login({
-            redirectUri: window.location.origin,
-        });
-    };
-
-    const handleRegister = (): void => {
-        void keycloak.register({
-            redirectUri: window.location.origin,
-        });
-    };
+    const navigate = useNavigate();
 
     return (
         <Box
@@ -62,6 +69,7 @@ export default function WelcomePage() {
                     >
                         <LocalShippingRoundedIcon sx={{ fontSize: 48 }} />
                     </Box>
+
                     <Typography
                         component="h1"
                         sx={{
@@ -73,6 +81,7 @@ export default function WelcomePage() {
                     >
                         Welcome to DeliveryApp!
                     </Typography>
+
                     <Typography
                         sx={{
                             mb: 3,
@@ -103,23 +112,8 @@ export default function WelcomePage() {
                             size="large"
                             fullWidth
                             startIcon={<LoginRoundedIcon />}
-                            onClick={handleLogin}
-                            sx={{
-                                bgcolor: "#2563eb",
-                                color: "#ffffff",
-                                py: "15px",
-                                px: "30px",
-                                mb: 1,
-                                borderRadius: "8px",
-                                textTransform: "none",
-                                fontSize: "1rem",
-                                fontWeight: 600,
-                                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.25)",
-                                "&:hover": {
-                                    bgcolor: "#1d4ed8",
-                                    boxShadow: "0 10px 24px rgba(37, 99, 235, 0.35)",
-                                },
-                            }}
+                            onClick={() => navigate("/login")}
+                            sx={primaryButtonSx}
                         >
                             Sign In
                         </Button>
@@ -129,36 +123,23 @@ export default function WelcomePage() {
                             size="large"
                             fullWidth
                             startIcon={<PersonAddAlt1RoundedIcon />}
-                            onClick={handleRegister}
-                            sx={{
-                                bgcolor: "#2563eb",
-                                color: "#ffffff",
-                                py: "15px",
-                                px: "30px",
-                                mb: 1,
-                                borderRadius: "8px",
-                                textTransform: "none",
-                                fontSize: "1rem",
-                                fontWeight: 600,
-                                boxShadow: "0 8px 20px rgba(37, 99, 235, 0.25)",
-                                "&:hover": {
-                                    bgcolor: "#1d4ed8",
-                                    boxShadow: "0 10px 24px rgba(37, 99, 235, 0.35)",
-                                },
-                            }}
+                            onClick={() => navigate("/register/courier")}
+                            sx={primaryButtonSx}
                         >
-                            Create Account
+                            Register as Courier
+                        </Button>
+
+                        <Button
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            startIcon={<PersonAddAlt1RoundedIcon />}
+                            onClick={() => navigate("/register/dispatcher")}
+                            sx={primaryButtonSx}
+                        >
+                            Register as Dispatcher
                         </Button>
                     </Box>
-                    <Typography
-                        component="p"
-                        sx={{
-                            mt: 2,
-                            color: "#999999",
-                            fontSize: "0.75rem",
-                        }}
-                    >
-                    </Typography>
                 </Paper>
             </Container>
         </Box>
