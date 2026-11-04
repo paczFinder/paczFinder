@@ -2,6 +2,7 @@ package com.delivery.service;
 
 import com.delivery.dto.CreateDeliveryRequest;
 import com.delivery.dto.DeliveryResponse;
+import com.delivery.dto.PaginatedResponse;
 import com.delivery.entity.Delivery;
 import com.delivery.entity.Trip;
 import com.delivery.enums.DeliveryStatus;
@@ -12,8 +13,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class DeliveryService {
@@ -26,18 +27,42 @@ public class DeliveryService {
         this.tripRepository = tripRepository;
     }
 
-    public List<DeliveryResponse> findAll() {
-        return deliveryRepository.listAll()
-                .stream()
-                .map(DeliveryResponse::from)
-                .toList();
+    public PaginatedResponse<DeliveryResponse> findAll(int page, int size) {
+        int pageIndex = Math.max(page, 0);
+        int pageSize = Math.max(size, 1);
+
+        List<Delivery> deliveries = deliveryRepository.findPaginated(pageIndex, pageSize);
+        long totalElements = deliveryRepository.count();
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+
+        return new PaginatedResponse<>(
+                deliveries.stream()
+                        .map(DeliveryResponse::from)
+                        .toList(),
+                totalElements,
+                pageIndex,
+                pageSize,
+                totalPages
+        );
     }
 
-    public List<DeliveryResponse> findAvailable() {
-        return deliveryRepository.list("status", DeliveryStatus.ADDED)
-                .stream()
-                .map(DeliveryResponse::from)
-                .toList();
+    public PaginatedResponse<DeliveryResponse> findAvailable(int page, int size) {
+        int pageIndex = Math.max(page, 0);
+        int pageSize = Math.max(size, 1);
+
+        List<Delivery> deliveries = deliveryRepository.findAvailablePaginated(pageIndex, pageSize);
+        long totalElements = deliveryRepository.count("status", com.delivery.enums.DeliveryStatus.ADDED);
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+
+        return new PaginatedResponse<>(
+                deliveries.stream()
+                        .map(DeliveryResponse::from)
+                        .toList(),
+                totalElements,
+                pageIndex,
+                pageSize,
+                totalPages
+        );
     }
 
     public DeliveryResponse findById(Long id) {
@@ -72,11 +97,8 @@ public class DeliveryService {
     public void delete(Long id) {
         Delivery delivery = getDelivery(id);
 
-        List<Trip> trips = tripRepository.findByDeliveryId(id);
-
-        for (Trip trip : trips) {
-            trip.deliveries.remove(delivery);
-        }
+        Optional<Trip> trip = tripRepository.findByDeliveryId(id);
+        trip.ifPresent(value -> value.deliveries.remove(delivery));
 
         deliveryRepository.delete(delivery);
     }

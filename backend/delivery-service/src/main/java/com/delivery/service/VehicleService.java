@@ -2,6 +2,7 @@ package com.delivery.service;
 
 import com.delivery.dto.AssignCourierRequest;
 import com.delivery.dto.CreateVehicleRequest;
+import com.delivery.dto.PaginatedResponse;
 import com.delivery.dto.VehicleResponse;
 import com.delivery.entity.Vehicle;
 import com.delivery.repository.TripRepository;
@@ -24,11 +25,23 @@ public class VehicleService {
         this.tripRepository = tripRepository;
     }
 
-    public List<VehicleResponse> findAll() {
-        return vehicleRepository.listAll()
-                .stream()
-                .map(VehicleResponse::from)
-                .toList();
+    public PaginatedResponse<VehicleResponse> findAll(int page, int size) {
+        int pageIndex = Math.max(page, 0);
+        int pageSize = Math.max(size, 1);
+
+        List<Vehicle> vehicles = vehicleRepository.findPaginated(pageIndex, pageSize);
+        long totalElements = vehicleRepository.count();
+        int totalPages = (int) Math.ceil((double) totalElements / pageSize);
+
+        return new PaginatedResponse<>(
+                vehicles.stream()
+                        .map(VehicleResponse::from)
+                        .toList(),
+                totalElements,
+                pageIndex,
+                pageSize,
+                totalPages
+        );
     }
 
     public VehicleResponse findById(Long id) {

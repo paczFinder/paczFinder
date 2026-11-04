@@ -5,17 +5,20 @@ import com.delivery.dto.AddDeliveryToTripRequest;
 import com.delivery.dto.ChangeTripVehicleRequest;
 import com.delivery.dto.CreateTripRequest;
 import com.delivery.dto.DeliveryResponse;
+import com.delivery.dto.PaginatedResponse;
 import com.delivery.dto.TripResponse;
 import com.delivery.service.TripService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -33,8 +36,11 @@ public class TripResource {
     }
 
     @GET
-    public List<TripResponse> findAll() {
-        return tripService.findAll();
+    public PaginatedResponse<TripResponse> findAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("20") int size
+    ) {
+        return tripService.findAll(page, size);
     }
 
     @GET

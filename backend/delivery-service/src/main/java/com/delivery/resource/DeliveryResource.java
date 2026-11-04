@@ -2,20 +2,21 @@ package com.delivery.resource;
 
 import com.delivery.dto.CreateDeliveryRequest;
 import com.delivery.dto.DeliveryResponse;
+import com.delivery.dto.PaginatedResponse;
 import com.delivery.service.DeliveryService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.List;
 
 @Path("/deliveries")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -29,14 +30,20 @@ public class DeliveryResource {
     }
 
     @GET
-    public List<DeliveryResponse> findAll() {
-        return deliveryService.findAll();
+    public PaginatedResponse<DeliveryResponse> findAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("20") int size
+    ) {
+        return deliveryService.findAll(page, size);
     }
 
     @GET
     @Path("/available")
-    public List<DeliveryResponse> findAvailable() {
-        return deliveryService.findAvailable();
+    public PaginatedResponse<DeliveryResponse> findAvailable(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("20") int size
+    ) {
+        return deliveryService.findAvailable(page, size);
     }
 
     @GET

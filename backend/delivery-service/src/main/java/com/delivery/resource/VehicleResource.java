@@ -2,11 +2,13 @@ package com.delivery.resource;
 
 import com.delivery.dto.AssignCourierRequest;
 import com.delivery.dto.CreateVehicleRequest;
+import com.delivery.dto.PaginatedResponse;
 import com.delivery.dto.VehicleResponse;
 import com.delivery.service.VehicleService;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
@@ -14,10 +16,9 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.util.List;
 
 @Path("/vehicles")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -31,8 +32,11 @@ public class VehicleResource {
     }
 
     @GET
-    public List<VehicleResponse> findAll() {
-        return vehicleService.findAll();
+    public PaginatedResponse<VehicleResponse> findAll(
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("size") @DefaultValue("20") int size
+    ) {
+        return vehicleService.findAll(page, size);
     }
 
     @GET
