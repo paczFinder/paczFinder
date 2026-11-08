@@ -45,7 +45,7 @@ portForward:
     localPort: 8081 # localhost:8081
   - resourceType: service
     resourceName: delivery-db
-    port: 8080
+    port: 5432
     localPort: 8082 # localhost:8082
   - resourceType: service
     resourceName: backend-routing-service
