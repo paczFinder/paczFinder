@@ -53,31 +53,73 @@ public class KeycloakAdminService {
     }
 
     public TokenResponse login(LoginRequest request) {
-        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> form = clientForm();
         form.add("grant_type", "password");
-        form.add("client_id", props.clientId());
-        form.add("client_secret", props.clientSecret());
         form.add("username", request.email());
         form.add("password", request.password());
         form.add("scope", "openid profile email");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
         try {
-            return restClient.post()
-                    .uri(props.tokenEndpoint())
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .body(form)
-                    .retrieve()
-                    .body(TokenResponse.class);
+            return postForm(props.tokenEndpoint(), form).body(TokenResponse.class);
         } catch (RestClientResponseException e) {
-            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+            String description = e.getResponseBodyAsString().toLowerCase();
+            if (description.contains("not fully set up")) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your account is not fully set up");
+            }
+            if (description.contains("disabled")) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Your account is disabled");
+            }
+            if (description.contains("invalid_grant")) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
             }
             throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
                     "Keycloak login failed: " + e.getMessage());
         }
+    }
+
+    public TokenResponse refresh(String refreshToken) {
+        MultiValueMap<String, String> form = clientForm();
+        form.add("grant_type", "refresh_token");
+        form.add("refresh_token", refreshToken);
+
+        try {
+            return postForm(props.tokenEndpoint(), form).body(TokenResponse.class);
+        } catch (RestClientResponseException e) {
+            if (e.getStatusCode().is4xxClientError()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Session expired, please log in again");
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
+                    "Keycloak token refresh failed: " + e.getMessage());
+        }
+    }
+
+    public void logout(String refreshToken) {
+        MultiValueMap<String, String> form = clientForm();
+        form.add("refresh_token", refreshToken);
+
+        try {
+            postForm(props.logoutEndpoint(), form).toBodilessEntity();
+        } catch (RestClientResponseException e) {
+            if (!e.getStatusCode().is4xxClientError()) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
+                        "Keycloak logout failed: " + e.getMessage());
+            }
+        }
+    }
+
+    private MultiValueMap<String, String> clientForm() {
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("client_id", props.clientId());
+        form.add("client_secret", props.clientSecret());
+        return form;
+    }
+
+    private RestClient.ResponseSpec postForm(String uri, MultiValueMap<String, String> form) {
+        return restClient.post()
+                .uri(uri)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(form)
+                .retrieve();
     }
 
     public String registerUser(RegisterRequest request) {

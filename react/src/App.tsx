@@ -5,7 +5,7 @@ import WelcomePage from "./pages/WelcomePage";
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import keycloak from "./keycloak";
+import { isAuthenticated } from "./api/authApi";
 
 function App() {
     return (
@@ -14,7 +14,7 @@ function App() {
                 <Route
                     path="/"
                     element={
-                        keycloak.authenticated
+                        isAuthenticated()
                             ? <Navigate to="/home" replace />
                             : <WelcomePage />
                     }
@@ -23,7 +23,7 @@ function App() {
                 <Route
                     path="/home"
                     element={
-                        keycloak.authenticated
+                        isAuthenticated()
                             ? <HomePage />
                             : <Navigate to="/" replace />
                     }

@@ -1,6 +1,7 @@
 package com.example.authservice.controller;
 
 import com.example.authservice.dto.LoginRequest;
+import com.example.authservice.dto.RefreshTokenRequest;
 import com.example.authservice.dto.RegisterRequest;
 import com.example.authservice.dto.TokenResponse;
 import com.example.authservice.dto.UserProfileResponse;
@@ -33,10 +34,20 @@ public class AuthUserController {
         authUserService.registerDispatcher(request);
     }
 
-
     @PostMapping("/login")
     public TokenResponse login(@Valid @RequestBody LoginRequest request) {
         return authUserService.login(request);
+    }
+
+    @PostMapping("/refresh")
+    public TokenResponse refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return authUserService.refresh(request.refreshToken());
+    }
+
+    @PostMapping("/logout")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout(@Valid @RequestBody RefreshTokenRequest request) {
+        authUserService.logout(request.refreshToken());
     }
 
     @GetMapping({"/profile"})

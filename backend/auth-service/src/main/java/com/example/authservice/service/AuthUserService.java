@@ -87,6 +87,14 @@ public class AuthUserService {
         }
     }
 
+    public TokenResponse refresh(String refreshToken) {
+        return keycloakAdminService.refresh(refreshToken);
+    }
+
+    public void logout(String refreshToken) {
+        keycloakAdminService.logout(refreshToken);
+    }
+
     public UserProfileResponse getProfileData(Jwt jwt) {
         String keycloakId = jwt.getSubject();
 

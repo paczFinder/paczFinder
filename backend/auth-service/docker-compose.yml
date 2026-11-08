@@ -51,7 +51,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./keycloak/auth-realm-realm.json:/opt/keycloak/data/import/auth-realm-realm.json:ro
+      - ../../helm-chart/files:/opt/keycloak/data/import:ro
     depends_on:
       keycloak-db:
         condition: service_healthy
