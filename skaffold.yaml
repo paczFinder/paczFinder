@@ -17,6 +17,11 @@ build:
       docker:
         dockerfile: Dockerfile
 
+    - image: auth-service
+      context: backend/auth-service
+      docker:
+        dockerfile: Dockerfile
+
 deploy:
   helm:
     releases:
@@ -37,3 +42,19 @@ portForward:
     resourceName: delivery-db
     port: 5432
     localPort: 5433 # localhost:5433
+  - resourceType: service
+    resourceName: backend-auth-service
+    port: 8080
+    localPort: 8082 # localhost:8082
+  - resourceType: service
+    resourceName: keycloak
+    port: 8080
+    localPort: 8180 # konsola Keycloaka
+  - resourceType: service
+    resourceName: auth-db
+    port: 5432
+    localPort: 5434 # localhost:5434
+  - resourceType: service
+    resourceName: keycloak-db
+    port: 5432
+    localPort: 5435 # localhost:5435

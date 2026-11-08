@@ -1,22 +1,15 @@
 import {
-    AppBar,
-    Box,
-    Button,
-    Container,
-    Paper,
-    Toolbar,
-    Typography,
+    AppBar, Box, Button, Container,
+    Paper, Toolbar, Typography,
 } from "@mui/material";
 import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import keycloak from "../keycloak";
-import { clearTokens } from "../api/authApi";
+import { logout } from "../api/authApi";
 
 export default function HomePage() {
     const handleSignOut = (): void => {
-        clearTokens();
-        void keycloak.logout({
-            redirectUri: window.location.origin + "/",
+        void logout().finally(() => {
+            window.location.replace("/");
         });
     };
 

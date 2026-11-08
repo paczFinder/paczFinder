@@ -1,68 +1,24 @@
 import React, { useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import {
-    Alert,
-    Box,
-    Button,
-    ButtonBase,
-    CircularProgress,
-    Container,
-    Divider,
-    IconButton,
-    InputAdornment,
-    Paper,
-    Snackbar,
-    TextField,
+    Alert, Box, Button, ButtonBase,
+    CircularProgress, Container, Divider, IconButton,
+    InputAdornment, Paper, Snackbar, TextField,
     Typography,
 } from "@mui/material";
 import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
-import keycloak from "../keycloak";
-import { loginWithPassword } from "../api/authApi";
+import { isAuthenticated, loginWithPassword } from "../api/authApi";
 import { emailRegex } from "../utils/validation";
+import {
+    alertSx, backButtonSx, devButtonSx, devButtonsRowSx, devDividerSx,
+    fieldSx, formSx, logoButtonSx, logoIconSx, pageSx, paperSx,
+    passwordToggleSx, primaryButtonSx, spinnerSx, subtitleSx, titleSx,
+} from "../styles/LoginStyle";
 
 const MIN_PASSWORD_LENGTH = 8;
 
-const fieldSx = {
-    "& .MuiOutlinedInput-root": {
-        borderRadius: "8px",
-        bgcolor: "#ffffff",
-        "& fieldset": { borderColor: "#d4d4d4" },
-        "&:hover fieldset": { borderColor: "#2563eb" },
-        "&.Mui-focused fieldset": { borderColor: "#2563eb" },
-    },
-    "& .MuiInputLabel-root.Mui-focused": { color: "#2563eb" },
-};
-
-const primaryButtonSx = {
-    bgcolor: "#2563eb",
-    color: "#ffffff",
-    py: "15px",
-    px: "30px",
-    borderRadius: "8px",
-    textTransform: "none",
-    fontSize: "1rem",
-    fontWeight: 600,
-    boxShadow: "0 8px 20px rgba(37, 99, 235, 0.25)",
-    "&:hover": {
-        bgcolor: "#1d4ed8",
-        boxShadow: "0 10px 24px rgba(37, 99, 235, 0.35)",
-    },
-    "&.Mui-disabled": {
-        bgcolor: "#93c5fd",
-        color: "#ffffff",
-        boxShadow: "none",
-    },
-};
-
-const devButtonSx = {
-    ...primaryButtonSx,
-    px: "12px",
-    whiteSpace: "nowrap",
-};
-
-// Test accounts created by the backend seeder – visible only in dev mode
 const DEV_ACCOUNTS = [
     { label: "dev | courier", email: "cuser@wp.pl", password: "User123!" },
     { label: "dev | dispatcher", email: "duser@wp.pl", password: "User123!" },
@@ -82,7 +38,7 @@ export default function LoginPage() {
     const [touchedEmail, setTouchedEmail] = useState(false);
     const [touchedPassword, setTouchedPassword] = useState(false);
 
-    if (keycloak.authenticated) {
+    if (isAuthenticated()) {
         return <Navigate to="/home" replace />;
     }
 
@@ -132,77 +88,32 @@ export default function LoginPage() {
 
     return (
         <Box
-            sx={{
-                minHeight: "100vh",
-                boxSizing: "border-box",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                bgcolor: "#f5f5f5",
-                px: 2,
-                py: 4,
-            }}
+            sx={pageSx()}
         >
             <Container maxWidth="sm">
                 <Paper
                     elevation={0}
-                    sx={{
-                        p: { xs: 3, sm: 4 },
-                        borderRadius: "8px",
-                        textAlign: "center",
-                        bgcolor: "#ffffff",
-                        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.12)",
-                    }}
+                    sx={paperSx()}
                 >
                     <ButtonBase
                         onClick={goToWelcome}
                         disabled={loading}
                         aria-label="Back to welcome page"
                         title="Back to welcome page"
-                        sx={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: 84,
-                            height: 84,
-                            mb: 3,
-                            borderRadius: "8px",
-                            bgcolor: "#dbeafe",
-                            color: "#1d4ed8",
-                            transition: "background-color 0.2s, transform 0.2s",
-                            "&:hover": {
-                                bgcolor: "#bfdbfe",
-                                transform: "translateY(-2px)",
-                            },
-                            "&.Mui-focusVisible": {
-                                outline: "2px solid #2563eb",
-                                outlineOffset: "2px",
-                            },
-                        }}
+                        sx={logoButtonSx()}
                     >
-                        <LocalShippingRoundedIcon sx={{ fontSize: 48 }} />
+                        <LocalShippingRoundedIcon sx={logoIconSx()} />
                     </ButtonBase>
 
                     <Typography
                         component="h1"
-                        sx={{
-                            mb: 2,
-                            color: "#171717",
-                            fontWeight: 600,
-                            fontSize: { xs: "1.8rem", sm: "2.1rem" },
-                        }}
+                        sx={titleSx()}
                     >
                         Sign In
                     </Typography>
 
                     <Typography
-                        sx={{
-                            mb: 3,
-                            mx: 1.5,
-                            color: "#757575",
-                            fontSize: "1rem",
-                            lineHeight: 1.6,
-                        }}
+                        sx={subtitleSx()}
                     >
                         Enter your email and password to continue.
                     </Typography>
@@ -211,15 +122,7 @@ export default function LoginPage() {
                         component="form"
                         noValidate
                         onSubmit={handleSubmit}
-                        sx={{
-                            width: "94%",
-                            maxWidth: 360,
-                            mx: "auto",
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 2,
-                            mt: 1.5,
-                        }}
+                        sx={formSx()}
                     >
                         <TextField
                             label="Email"
@@ -243,7 +146,7 @@ export default function LoginPage() {
                                         ? "Invalid email format"
                                         : " "
                             }
-                            sx={fieldSx}
+                            sx={fieldSx()}
                         />
 
                         <TextField
@@ -262,7 +165,7 @@ export default function LoginPage() {
                             disabled={loading}
                             error={touchedPassword && !isPasswordValid}
                             helperText={passwordHelperText}
-                            sx={fieldSx}
+                            sx={fieldSx()}
                             slotProps={{
                                 htmlInput: { maxLength: 100 },
                                 input: {
@@ -274,7 +177,7 @@ export default function LoginPage() {
                                                     showPassword ? "Hide password" : "Show password"
                                                 }
                                                 edge="end"
-                                                sx={{ color: "#757575" }}
+                                                sx={passwordToggleSx()}
                                             >
                                                 {showPassword ? (
                                                     <VisibilityOffRoundedIcon />
@@ -294,10 +197,10 @@ export default function LoginPage() {
                             size="large"
                             fullWidth
                             disabled={loading || !isFormValid}
-                            sx={primaryButtonSx}
+                            sx={primaryButtonSx()}
                         >
                             {loading ? (
-                                <CircularProgress size={24} sx={{ color: "#ffffff" }} />
+                                <CircularProgress size={24} sx={spinnerSx()} />
                             ) : (
                                 "Sign In"
                             )}
@@ -310,20 +213,7 @@ export default function LoginPage() {
                             fullWidth
                             disabled={loading}
                             onClick={goToWelcome}
-                            sx={{
-                                color: "#2563eb",
-                                borderColor: "#2563eb",
-                                py: "15px",
-                                px: "30px",
-                                borderRadius: "8px",
-                                textTransform: "none",
-                                fontSize: "1rem",
-                                fontWeight: 600,
-                                "&:hover": {
-                                    borderColor: "#1d4ed8",
-                                    bgcolor: "#dbeafe",
-                                },
-                            }}
+                            sx={backButtonSx()}
                         >
                             Back
                         </Button>
@@ -331,17 +221,12 @@ export default function LoginPage() {
                         {import.meta.env.DEV && (
                             <>
                                 <Divider
-                                    sx={{
-                                        mt: 1,
-                                        color: "#999999",
-                                        fontSize: "0.75rem",
-                                        fontWeight: 600,
-                                    }}
+                                    sx={devDividerSx()}
                                 >
                                     DEV LOGIN
                                 </Divider>
 
-                                <Box sx={{ display: "flex", gap: 1.5 }}>
+                                <Box sx={devButtonsRowSx()}>
                                     {DEV_ACCOUNTS.map((account) => (
                                         <Button
                                             key={account.email}
@@ -354,7 +239,7 @@ export default function LoginPage() {
                                                 handleDevLogin(account.email, account.password)
                                             }
                                             title={account.email}
-                                            sx={devButtonSx}
+                                            sx={devButtonSx()}
                                         >
                                             {account.label}
                                         </Button>
@@ -377,7 +262,7 @@ export default function LoginPage() {
                     severity="error"
                     variant="filled"
                     elevation={6}
-                    sx={{ width: "100%", borderRadius: "8px", fontWeight: 500 }}
+                    sx={alertSx()}
                 >
                     {apiError}
                 </Alert>

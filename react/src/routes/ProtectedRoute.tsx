@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
-import keycloak from "../keycloak";
+import { isAuthenticated } from "../api/authApi";
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-    if (!keycloak.authenticated) {
+    if (!isAuthenticated()) {
         return <Navigate to="/" replace />;
     }
     return <>{children}</>;

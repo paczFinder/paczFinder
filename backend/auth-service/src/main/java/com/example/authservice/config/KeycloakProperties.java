@@ -14,4 +14,8 @@ public record KeycloakProperties(
     public String tokenEndpoint() {
         return serverUrl + "/realms/" + realm + "/protocol/openid-connect/token";
     }
+
+    public String logoutEndpoint() {
+        return serverUrl + "/realms/" + realm + "/protocol/openid-connect/logout";
+    }
 }
