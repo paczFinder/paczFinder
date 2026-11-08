@@ -1,0 +1,14 @@
+services:
+  osrm:
+    build:
+      context: ../..
+      dockerfile: infra/osrm/Dockerfile
+    container_name: osrm
+    ports:
+      - "5000:5000"
+    volumes:
+      - osrm-data:/data
+    mem_limit: 2g
+
+volumes:
+  osrm-data:

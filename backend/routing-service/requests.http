@@ -1,0 +1,33 @@
+### Pobranie macierzy kosztów (Table API) dla punktów w Łodzi
+POST http://localhost:5000/table/v1/driving/19.4586,51.7592;19.4650,51.7600;19.4700,51.7550?annotations=duration,distance
+
+### Pobranie geometrii trasy (Route API) dla punktów w Łodzi
+POST http://localhost:5000/route/v1/driving/19.4586,51.7592;19.4650,51.7600;19.4700,51.7550;19.4586,51.7592?overview=full&geometries=geojson
+
+### Pobranie macierzy kosztów przez Routing Service
+POST http://localhost:8080/api/v1/routing/matrix
+Content-Type: application/json
+
+{
+  "points": [
+    { "id": "depot", "lat": 51.7592, "lon": 19.4586 },
+    { "id": "box_1", "lat": 51.7600, "lon": 19.4650 },
+    { "id": "box_2", "lat": 51.7550, "lon": 19.4700 }
+  ]
+}
+
+### Pobranie geometrii trasy przez Routing Service
+POST http://localhost:8080/api/v1/routing/route
+Content-Type: application/json
+
+{
+  "orderedPoints": [
+    { "id": "depot", "lat": 51.7592, "lon": 19.4586 },
+    { "id": "box_1", "lat": 51.7600, "lon": 19.4650 },
+    { "id": "box_2", "lat": 51.7550, "lon": 19.4700 },
+    { "id": "depot", "lat": 51.7592, "lon": 19.4586 }
+  ]
+}
+
+### OpenAPI specyfikacja (Swagger)
+GET http://localhost:8080/v3/api-docs
