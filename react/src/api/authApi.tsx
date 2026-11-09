@@ -7,8 +7,9 @@ export interface RegisterData {
     password: string;
 }
 
-// lokalnie: http://localhost:8082, Kubernetes: http://localhost:30082 (ustaw VITE_AUTH_API_URL w react/.env.local)
-const API_URL: string = import.meta.env.VITE_AUTH_API_URL ?? "http://localhost:30082";
+// Jedyny adres backendu: api-gateway. Kubernetes: http://localhost:30080 (domyślnie),
+// lokalnie: http://localhost:8000 (ustaw VITE_API_URL w react/.env.local)
+export const API_URL: string = import.meta.env.VITE_API_URL ?? "http://localhost:30080";
 
 const readErrorMessage = async (response: Response): Promise<string | undefined> => {
     try {
@@ -70,14 +71,23 @@ export const clearTokens = (): void => {
     }
 };
 
-const expiresAt = (jwt: string): number => {
+type JwtPayload = {
+    exp?: number;
+    realm_access?: { roles?: string[] };
+};
+
+const decodeJwt = (jwt: string): JwtPayload => {
     try {
         const payload = jwt.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-        const { exp } = JSON.parse(atob(payload)) as { exp?: number };
-        return exp ? exp * 1000 : 0;
+        return JSON.parse(atob(payload)) as JwtPayload;
     } catch {
-        return 0;
+        return {};
     }
+};
+
+const expiresAt = (jwt: string): number => {
+    const { exp } = decodeJwt(jwt);
+    return exp ? exp * 1000 : 0;
 };
 
 const secondsLeft = (jwt: string): number => (expiresAt(jwt) - Date.now()) / 1000;
@@ -89,6 +99,25 @@ const storeTokenResponse = (data: TokenResponse): void => {
 export const isAuthenticated = (): boolean => {
     const tokens = loadTokens();
     return tokens !== null && secondsLeft(tokens.refreshToken) > 0;
+};
+
+export const ROLES = {
+    ADMIN: "ADMIN",
+    DISPATCHER: "DISPATCHER",
+    COURIER: "COURIER",
+} as const;
+
+export type Role = (typeof ROLES)[keyof typeof ROLES];
+
+/** Role realmu Keycloaka zalogowanego użytkownika (claim realm_access.roles z access tokena). */
+export const getUserRoles = (): string[] => {
+    const tokens = loadTokens();
+    return tokens ? (decodeJwt(tokens.token).realm_access?.roles ?? []) : [];
+};
+
+export const hasAnyRole = (roles: readonly Role[]): boolean => {
+    const userRoles = getUserRoles();
+    return roles.some((role) => userRoles.includes(role));
 };
 
 export async function loginWithPassword(email: string, password: string): Promise<void> {
@@ -197,3 +226,80 @@ export async function logout(): Promise<void> {
         }
     }
 }
+
+// ---------------------------------------------------------------------------
+// Żądania do API (przez api-gateway) z tokenem zalogowanego użytkownika
+// ---------------------------------------------------------------------------
+
+export interface Paginated<T> {
+    content: T[];
+    totalElements: number;
+    page: number;
+    size: number;
+    totalPages: number;
+}
+
+export class ApiError extends Error {
+    readonly status: number;
+
+    constructor(status: number, message: string) {
+        super(message);
+        this.status = status;
+    }
+}
+
+type RequestOptions = {
+    method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+    body?: unknown;
+};
+
+const defaultErrorMessage = (status: number): string => {
+    if (status === 403) return "You don't have permission to do this.";
+    if (status === 404) return "Not found.";
+    if (status >= 500) return "Server error. Try again later.";
+    return `Request failed (${status})`;
+};
+
+/**
+ * Żądanie do backendu przez api-gateway z tokenem użytkownika.
+ * Zwraca sparsowany JSON (albo undefined dla 204), a błędy rzuca jako ApiError z polem `message` z backendu.
+ */
+export async function apiRequest<T>(path: string, { method = "GET", body }: RequestOptions = {}): Promise<T> {
+    const token = await getAccessToken();
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    if (body !== undefined) headers["Content-Type"] = "application/json";
+
+    let response: Response;
+    try {
+        response = await fetch(`${API_URL}${path}`, {
+            method,
+            headers,
+            body: body !== undefined ? JSON.stringify(body) : undefined,
+        });
+    } catch {
+        throw new ApiError(0, "Cannot connect to the server. Try again later.");
+    }
+
+    if (response.status === 401) {
+        await logout();
+        window.location.replace("/");
+        throw new ApiError(401, "Session expired. Please sign in again.");
+    }
+
+    if (!response.ok) {
+        let message: string | undefined;
+        try {
+            message = ((await response.json()) as { message?: string }).message;
+        } catch {
+            // brak JSON-a w odpowiedzi
+        }
+        throw new ApiError(response.status, message || defaultErrorMessage(response.status));
+    }
+
+    const text = await response.text();
+    return (text ? JSON.parse(text) : undefined) as T;
+}
+
+export const getErrorMessage = (error: unknown): string =>
+    error instanceof Error ? error.message : "Something went wrong. Try again.";
