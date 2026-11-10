@@ -1,14 +1,41 @@
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 
+import WelcomePage from "./pages/WelcomePage";
+import HomePage from "./pages/HomePage";
+import RegisterPage from "./pages/RegisterPage";
+import LoginPage from "./pages/LoginPage";
+import { isAuthenticated } from "./api/authApi";
+
 function App() {
-  return (
-    <>
-      <div className="App flex flex-col items-center justify-center min-h-screen bg-bg">
-        <h1 className="text-3xl font-bold text-primary">Welcome to PaczFinder!</h1>
-        <p className="text-accent">This is a simple React application.</p>
-      </div>
-    </>
-  );
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        isAuthenticated()
+                            ? <Navigate to="/home" replace />
+                            : <WelcomePage />
+                    }
+                />
+
+                <Route
+                    path="/home"
+                    element={
+                        isAuthenticated()
+                            ? <HomePage />
+                            : <Navigate to="/" replace />
+                    }
+                />
+
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register/:role" element={<RegisterPage />} />
+
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-auth-service
+  template:
+    metadata:
+      labels:
+        app: backend-auth-service
+    spec:
+      initContainers:
+        - name: wait-for-keycloak
+          image: busybox:1.36
+          command: ["sh", "-c", "until wget -q -O /dev/null http://keycloak:8080/realms/auth-realm; do sleep 3; done"]
+      containers:
+        - name: backend-auth-service
+          image: auth-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kubernetes"
+            - name: SERVER_PORT
+              value: "8080"
+          envFrom:
+            - configMapRef:
+                name: auth-db-config
+            - secretRef:
+                name: auth-db-secret
+            - configMapRef:
+                name: auth-keycloak-config
+            - secretRef:
+                name: auth-keycloak-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-auth-service
+spec:
+  type: NodePort
+  selector:
+    app: backend-auth-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30082 # http://localhost:30082
