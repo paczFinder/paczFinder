@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-routing-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-routing-service
+  template:
+    metadata:
+      labels:
+        app: backend-routing-service
+    spec:
+      containers:
+        - name: backend-routing-service
+          image: backend-routing-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kubernetes"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-routing-service
+spec:
+  type: NodePort
+  selector:
+    app: backend-routing-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30082
