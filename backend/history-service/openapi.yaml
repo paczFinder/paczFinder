@@ -1,0 +1,294 @@
+---
+openapi: 3.1.0
+components:
+  schemas:
+    CreateRouteHistoryRequest:
+      type: object
+      required:
+      - sourceRoutePlanId
+      - tripId
+      - totalDistanceM
+      - drivingTimeS
+      - serviceTimeS
+      - totalTimeS
+      - stops
+      properties:
+        sourceRoutePlanId:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        tripId:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        totalDistanceM:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        drivingTimeS:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        serviceTimeS:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        totalTimeS:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        stops:
+          type: array
+          items:
+            $ref: "#/components/schemas/CreateRouteHistoryStopRequest"
+          minItems: 1
+    CreateRouteHistoryStopRequest:
+      type: object
+      required:
+      - deliveryId
+      - stopOrder
+      - address
+      - latitude
+      - longitude
+      properties:
+        deliveryId:
+          type: integer
+          format: int64
+          exclusiveMinimum: 0
+        stopOrder:
+          type: integer
+          format: int32
+          exclusiveMinimum: 0
+        address:
+          type: string
+          pattern: \S
+          maxLength: 255
+        latitude:
+          type: number
+          format: double
+          maximum: 90.0
+          minimum: -90.0
+        longitude:
+          type: number
+          format: double
+          maximum: 180.0
+          minimum: -180.0
+    Instant:
+      type: string
+      format: date-time
+      examples:
+      - 2022-03-10T16:15:50Z
+    PaginatedResponseRouteHistoryResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/RouteHistoryResponse"
+        totalElements:
+          type: integer
+          format: int64
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalPages:
+          type: integer
+          format: int32
+    RouteHistoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        sourceRoutePlanId:
+          type: integer
+          format: int64
+        tripId:
+          type: integer
+          format: int64
+        totalDistanceM:
+          type: integer
+          format: int64
+        drivingTimeS:
+          type: integer
+          format: int64
+        serviceTimeS:
+          type: integer
+          format: int64
+        totalTimeS:
+          type: integer
+          format: int64
+        calculatedAt:
+          $ref: "#/components/schemas/Instant"
+        stops:
+          type: array
+          items:
+            $ref: "#/components/schemas/RouteHistoryStopResponse"
+    RouteHistoryStopResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        routeHistoryId:
+          type: integer
+          format: int64
+        deliveryId:
+          type: integer
+          format: int64
+        stopOrder:
+          type: integer
+          format: int32
+        address:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+paths:
+  /history/routes:
+    get:
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginatedResponseRouteHistoryResponse"
+      summary: Find All
+      tags:
+      - Route History Resource
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRouteHistoryRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+        "400":
+          description: Bad Request
+      summary: Create
+      tags:
+      - Route History Resource
+  /history/routes/source-route-plan/{sourceRoutePlanId}:
+    get:
+      parameters:
+      - name: sourceRoutePlanId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteHistoryResponse"
+      summary: Find By Source Route Plan Id
+      tags:
+      - Route History Resource
+  /history/routes/{id}:
+    get:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteHistoryResponse"
+      summary: Find By Id
+      tags:
+      - Route History Resource
+    delete:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema: {}
+      summary: Delete
+      tags:
+      - Route History Resource
+  /history/trips/{tripId}:
+    get:
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RouteHistoryResponse"
+      summary: Find By Trip Id
+      tags:
+      - Route History Resource
+  /history/trips/{tripId}/latest:
+    get:
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RouteHistoryResponse"
+      summary: Find Latest By Trip Id
+      tags:
+      - Route History Resource
+info:
+  title: history-service API
+  version: 1.0.0-SNAPSHOT

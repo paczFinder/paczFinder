@@ -12,6 +12,9 @@ nodes:
       - containerPort: 30082   # backend-auth-service
         hostPort: 30082
         protocol: TCP
+      - containerPort: 30083   # backend-history-service
+        hostPort: 30083
+        protocol: TCP
       - containerPort: 30090   # keycloak
         hostPort: 30090
         protocol: TCP
