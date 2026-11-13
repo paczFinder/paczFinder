@@ -22,6 +22,11 @@ build:
       docker:
         dockerfile: Dockerfile
 
+    - image: backend-history-service
+      context: backend/history-service
+      docker:
+        dockerfile: Dockerfile
+
 deploy:
   helm:
     releases:
@@ -46,6 +51,14 @@ portForward:
     resourceName: backend-auth-service
     port: 8080
     localPort: 8082 # localhost:8082
+  - resourceType: service
+    resourceName: backend-history-service
+    port: 8080
+    localPort: 8083 # localhost:8083
+  - resourceType: service
+    resourceName: history-db
+    port: 5432
+    localPort: 5436 # localhost:5436
   - resourceType: service
     resourceName: keycloak
     port: 8080
