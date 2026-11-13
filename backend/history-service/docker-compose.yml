@@ -1,0 +1,21 @@
+services:
+  history-db:
+    image: postgres:17
+    container_name: history-db
+    environment:
+      POSTGRES_DB: history_db
+      POSTGRES_USER: history_user
+      POSTGRES_PASSWORD: history_password
+    ports:
+      - "5436:5432"
+    volumes:
+      - history_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U history_user -d history_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  history_db_data:
+
