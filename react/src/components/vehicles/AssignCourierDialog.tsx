@@ -83,7 +83,7 @@ export default function AssignCourierDialog({ vehicle, onClose, onSubmit }: Assi
                         disabled={saving || (touched && !isValid)}
                         sx={compactPrimaryButtonSx()}
                     >
-                        {saving ? <CircularProgress size={22} sx={spinnerSx()} /> : "Assign"}
+                        {saving ? <CircularProgress size={22} sx={spinnerSx()} /> : "Save"}
                     </Button>
                 </DialogActions>
             </form>

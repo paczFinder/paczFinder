@@ -5,7 +5,6 @@ import {
     TableHead, TablePagination, TableRow, Tooltip, Typography,
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
 import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
@@ -61,7 +60,6 @@ export default function TripPage() {
     const [dialog, setDialog] = useState<DialogState>(null);
     const [notice, setNotice] = useState<Notice>(null);
 
-    // GET /trips?page=&size=
     useEffect(() => {
         let cancelled = false;
         getTrips(page, rowsPerPage, query)
@@ -99,7 +97,6 @@ export default function TripPage() {
         setPage(newPage);
     };
 
-    // zmiana filtrów lub sortowania – wróć na pierwszą stronę
     const handleQueryChange = (newQuery: TripQuery): void => {
         setLoading(true);
         setQuery(newQuery);
@@ -112,19 +109,16 @@ export default function TripPage() {
         setPage(0);
     };
 
-    // POST /trips
     const handleCreate = async (vehicleId: number): Promise<void> => {
         const trip = await createTrip(vehicleId);
         finishAction(`Trip #${trip.id} created. Add deliveries to it next.`);
     };
 
-    // PATCH /trips/{id}/vehicle
     const handleChangeVehicle = async (tripId: number, vehicleId: number): Promise<void> => {
         await changeTripVehicle(tripId, vehicleId);
         finishAction("Vehicle changed.");
     };
 
-    // POST /trips/{id}/deliveries (jedna) albo /trips/{id}/deliveries/batch (kilka)
     const handleAddDeliveries = async (tripId: number, deliveryIds: number[]): Promise<void> => {
         if (deliveryIds.length === 1) {
             await addDeliveryToTrip(tripId, deliveryIds[0]);
@@ -134,13 +128,11 @@ export default function TripPage() {
         finishAction(deliveryIds.length === 1 ? "Delivery added to the trip." : `${deliveryIds.length} deliveries added to the trip.`);
     };
 
-    // POST /trips/{id}/finish
     const handleFinish = async (tripId: number): Promise<void> => {
         await finishTrip(tripId);
         finishAction("Trip finished. Its deliveries are marked as delivered.");
     };
 
-    // DELETE /trips/{id}
     const handleDelete = async (tripId: number): Promise<void> => {
         await deleteTrip(tripId);
         closeDialog();
@@ -169,21 +161,12 @@ export default function TripPage() {
 
                 <Box sx={headerActionsSx()}>
                     <Button
-                        variant="outlined"
-                        startIcon={<RefreshRoundedIcon />}
-                        onClick={reload}
-                        disabled={loading}
-                        sx={compactSecondaryButtonSx()}
-                    >
-                        Refresh
-                    </Button>
-                    <Button
                         variant="contained"
                         startIcon={<AddRoundedIcon />}
                         onClick={() => setDialog({ type: "create" })}
                         sx={compactPrimaryButtonSx()}
                     >
-                        New trip
+                        Add trip
                     </Button>
                 </Box>
             </Box>
@@ -380,9 +363,9 @@ export default function TripPage() {
 
             {dialog?.type === "create" && (
                 <VehiclePickerDialog
-                    title="New trip"
+                    title="Add trip"
                     description="Choose the vehicle that will carry the deliveries."
-                    confirmLabel="Create trip"
+                    confirmLabel="Add"
                     onClose={closeDialog}
                     onSubmit={handleCreate}
                 />
@@ -391,7 +374,7 @@ export default function TripPage() {
             {dialog?.type === "changeVehicle" && (
                 <VehiclePickerDialog
                     title={`Change vehicle for trip #${dialog.trip.id}`}
-                    confirmLabel="Change vehicle"
+                    confirmLabel="Save"
                     currentVehicleId={dialog.trip.vehicleId}
                     requiredCapacity={dialog.trip.usedCapacity}
                     onClose={closeDialog}
@@ -415,7 +398,7 @@ export default function TripPage() {
                 <ConfirmDialog
                     title={`Finish trip #${dialog.trip.id}`}
                     message={`All ${dialog.trip.deliveryCount} deliveries in this trip will be marked as delivered. The trip can no longer be changed.`}
-                    confirmLabel="Finish trip"
+                    confirmLabel="Save"
                     onClose={closeDialog}
                     onConfirm={() => handleFinish(dialog.trip.id)}
                 />
@@ -424,7 +407,7 @@ export default function TripPage() {
             {dialog?.type === "delete" && (
                 <ConfirmDialog
                     title={`Delete trip #${dialog.trip.id}`}
-                    message={`Delete this trip? Its ${dialog.trip.deliveryCount} deliveries will become available for other trips.`}
+                    message={`Are you sure you want to delete trip #${dialog.trip.id}? Its ${dialog.trip.deliveryCount} deliveries will become available for other trips.`}
                     confirmLabel="Delete"
                     danger
                     onClose={closeDialog}

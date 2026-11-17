@@ -18,8 +18,6 @@ const SORT_OPTIONS: SortOption<TripQuery>[] = [
     { label: "Newest first", sort: "id", direction: "desc" },
     { label: "Registration A–Z", sort: "vehicle.registrationNumber", direction: "asc" },
     { label: "Registration Z–A", sort: "vehicle.registrationNumber", direction: "desc" },
-    { label: "Vehicle brand A–Z", sort: "vehicle.brand", direction: "asc" },
-    { label: "Vehicle brand Z–A", sort: "vehicle.brand", direction: "desc" },
 ];
 
 type TripToolbarProps = {
@@ -36,6 +34,7 @@ export default function TripToolbar({ query, onChange }: TripToolbarProps) {
             filters={FILTERS}
             sortOptions={SORT_OPTIONS}
             onChange={onChange}
+            inlineSearch
         />
     );
 }

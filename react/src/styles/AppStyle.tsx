@@ -1,4 +1,4 @@
-import { alpha } from "@mui/material/styles";
+import { alpha, type SxProps, type Theme } from "@mui/material/styles";
 import { theme } from "./theme";
 import { backButtonSx, fieldSx, primaryButtonSx } from "./LoginStyle";
 
@@ -148,6 +148,11 @@ export const compactSecondaryButtonSx = () => ({
     whiteSpace: "nowrap",
 });
 
+export const toolbarButtonSx = () => ({
+    ...compactSecondaryButtonSx(),
+    bgcolor: palette.common.white,
+});
+
 export const dangerButtonSx = () => ({
     ...compactPrimaryButtonSx(),
     bgcolor: palette.error.main,
@@ -220,7 +225,7 @@ export const dialogFormSx = () => ({
     display: "flex",
     flexDirection: "column",
     gap: 1,
-    pt: 1,
+    "&&": { pt: 1 },
 });
 
 export const dialogActionsSx = () => ({
@@ -259,10 +264,23 @@ export const listToolbarSx = () => ({
     mb: 2,
 });
 
-export const filterChipsSx = () => ({
+export const inlineSearchSx = () => ({
+    width: { xs: "100%", sm: 320 },
+    alignSelf: "stretch",
+    "& .MuiOutlinedInput-root": { height: "100%" },
+});
+
+export const toolbarButtonsSx = (alignRight = false) => ({
+    display: "flex",
+    gap: 1,
+    ...(alignRight && { ml: "auto" }),
+});
+
+export const filterChipsSx = (ownRow = false) => ({
     display: "flex",
     flexWrap: "wrap",
     gap: 1,
+    ...(ownRow && { flexBasis: "100%", "&:empty": { display: "none" } }),
 });
 
 export const popoverPaperSx = () => ({
@@ -271,9 +289,10 @@ export const popoverPaperSx = () => ({
     boxShadow: `0 8px 24px ${alpha(palette.common.black, 0.12)}`,
 });
 
-export const filterFormSx = () => ({
+export const filterFormSx = (fitContent = false): SxProps<Theme> => ({
     p: 2.5,
-    width: 300,
+    width: fitContent ? "max-content" : 300,
+    minWidth: fitContent ? 220 : 0,
     maxWidth: "calc(100vw - 32px)",
     boxSizing: "border-box",
     display: "flex",
@@ -301,12 +320,10 @@ export const brandCellSx = () => ({
     gap: 1,
 });
 
-/** Ikona auta w wierszu tabeli – niebieska dla aktywnych, wyszarzona dla nieaktywnych. */
 export const vehicleIconSx = (active: boolean) => ({
     color: active ? palette.primary.main : palette.text.disabled,
 });
 
-/** Ikona na początku wiersza tabeli; wyszarzona np. dla nieaktywnych / zakończonych pozycji. */
 export const rowIconSx = (muted = false) => ({
     color: muted ? palette.text.disabled : palette.primary.main,
 });
@@ -375,7 +392,6 @@ export const errorTextSx = () => ({
     fontWeight: 600,
 });
 
-/** Pole formularza zajmujące cały wiersz siatki formGridSx. */
 export const fullRowFieldSx = () => ({
     ...fieldSx(),
     ...formFullRowSx(),

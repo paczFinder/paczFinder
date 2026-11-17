@@ -1,4 +1,4 @@
-import React, { useState, type ReactNode } from "react";
+import React, { useEffect, useRef, useState, type ReactNode } from "react";
 import {
     Box, Button, Chip, InputAdornment, ListItemIcon, ListItemText,
     Menu, MenuItem, Popover, TextField,
@@ -11,12 +11,13 @@ import { clearFilters, countActiveFilters, type BaseListQuery, type SortDirectio
 import { fieldSx } from "../styles/LoginStyle";
 import {
     compactPrimaryButtonSx, compactSecondaryButtonSx, filterActionsSx, filterChipsSx,
-    filterFormSx, listToolbarSx, menuCheckSx, popoverPaperSx, searchIconSx,
+    filterFormSx, inlineSearchSx, listToolbarSx, toolbarButtonSx, toolbarButtonsSx, menuCheckSx, popoverPaperSx, searchIconSx,
 } from "../styles/AppStyle";
+
+const SEARCH_DEBOUNCE_MS = 350;
 
 export type FilterOption = { value: string; label: string };
 
-/** Filtr typu "lista wyboru"; pierwsza opcja powinna odpowiadać wartości domyślnej (np. "all"). */
 export type FilterField<Q> = {
     key: Extract<keyof Q, string>;
     label: string;
@@ -36,20 +37,86 @@ type ListToolbarProps<Q extends BaseListQuery> = {
     filters: FilterField<Q>[];
     sortOptions: SortOption<Q>[];
     onChange: (query: Q) => void;
-    /** Dodatkowe elementy na początku paska (np. przełącznik zakresu listy). */
     leading?: ReactNode;
+    inlineSearch?: boolean;
 };
 
 type FilterFormProps<Q extends BaseListQuery> = {
     initial: Q;
     searchLabel: string;
     filters: FilterField<Q>[];
+    showSearch: boolean;
     onApply: (query: Q) => void;
     onClear: () => void;
 };
 
-/** Formularz w popoverze – ma własny szkic, zmiany trafiają do listy dopiero po "Apply". */
-function FilterForm<Q extends BaseListQuery>({ initial, searchLabel, filters, onApply, onClear }: FilterFormProps<Q>) {
+const searchAdornment = {
+    input: {
+        startAdornment: (
+            <InputAdornment position="start">
+                <SearchRoundedIcon fontSize="small" sx={searchIconSx()} />
+            </InputAdornment>
+        ),
+    },
+};
+
+type InlineSearchProps = {
+    value: string;
+    placeholder: string;
+    onSearch: (search: string) => void;
+};
+
+function InlineSearch({ value, placeholder, onSearch }: InlineSearchProps) {
+    const [text, setText] = useState(value);
+    const [syncedValue, setSyncedValue] = useState(value);
+    const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const onSearchRef = useRef(onSearch);
+
+    useEffect(() => {
+        onSearchRef.current = onSearch;
+    }, [onSearch]);
+
+    useEffect(() => () => {
+        if (timerRef.current) clearTimeout(timerRef.current);
+    }, []);
+
+    if (value !== syncedValue) {
+        setSyncedValue(value);
+        setText(value);
+    }
+
+    const cancelPending = (): void => {
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = null;
+    };
+
+    const submit = (next: string): void => {
+        cancelPending();
+        if (next.trim() !== value.trim()) onSearchRef.current(next.trim());
+    };
+
+    const handleChange = (next: string): void => {
+        setText(next);
+        cancelPending();
+        timerRef.current = setTimeout(() => submit(next), SEARCH_DEBOUNCE_MS);
+    };
+
+    return (
+        <TextField
+            placeholder={placeholder}
+            size="small"
+            value={text}
+            onChange={(e) => handleChange(e.target.value)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter") submit(text);
+            }}
+            sx={[fieldSx(), inlineSearchSx()]}
+            slotProps={{ ...searchAdornment, htmlInput: { "aria-label": "Search" } }}
+        />
+    );
+}
+
+function FilterForm<Q extends BaseListQuery>({ initial, searchLabel, filters, showSearch, onApply, onClear }: FilterFormProps<Q>) {
     const [draft, setDraft] = useState<Q>(initial);
 
     const handleSubmit = (e: React.FormEvent): void => {
@@ -58,26 +125,20 @@ function FilterForm<Q extends BaseListQuery>({ initial, searchLabel, filters, on
     };
 
     return (
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={filterFormSx()}>
-            <TextField
-                label="Search"
-                placeholder={searchLabel}
-                size="small"
-                autoFocus
-                fullWidth
-                value={draft.search}
-                onChange={(e) => setDraft({ ...draft, search: e.target.value })}
-                sx={fieldSx()}
-                slotProps={{
-                    input: {
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <SearchRoundedIcon fontSize="small" sx={searchIconSx()} />
-                            </InputAdornment>
-                        ),
-                    },
-                }}
-            />
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={filterFormSx(!showSearch)}>
+            {showSearch && (
+                <TextField
+                    label="Search"
+                    placeholder={searchLabel}
+                    size="small"
+                    autoFocus
+                    fullWidth
+                    value={draft.search}
+                    onChange={(e) => setDraft({ ...draft, search: e.target.value })}
+                    sx={fieldSx()}
+                    slotProps={searchAdornment}
+                />
+            )}
 
             {filters.map((filter) => (
                 <TextField
@@ -108,14 +169,13 @@ function FilterForm<Q extends BaseListQuery>({ initial, searchLabel, filters, on
     );
 }
 
-/** Pasek nad tabelą: przycisk filtrów (wyszukiwanie + listy wyboru), menu sortowania i chipy aktywnych filtrów. */
 export default function ListToolbar<Q extends BaseListQuery>({
-    query, defaultQuery, searchLabel, filters, sortOptions, onChange, leading,
+    query, defaultQuery, searchLabel, filters, sortOptions, onChange, leading, inlineSearch = false,
 }: ListToolbarProps<Q>) {
     const [filterAnchor, setFilterAnchor] = useState<HTMLElement | null>(null);
     const [sortAnchor, setSortAnchor] = useState<HTMLElement | null>(null);
 
-    const activeFilters = countActiveFilters(query, defaultQuery);
+    const activeFilters = countActiveFilters(query, defaultQuery) - (inlineSearch && query.search.trim() ? 1 : 0);
     const currentSort =
         sortOptions.find((o) => o.sort === query.sort && o.direction === query.direction) ?? sortOptions[0];
 
@@ -126,8 +186,11 @@ export default function ListToolbar<Q extends BaseListQuery>({
 
     const handleClear = (): void => {
         setFilterAnchor(null);
-        onChange(clearFilters(query, defaultQuery));
+        const cleared = clearFilters(query, defaultQuery);
+        onChange(inlineSearch ? { ...cleared, search: query.search } : cleared);
     };
+
+    const handleInlineSearch = (search: string): void => onChange({ ...query, search });
 
     const applySort = (option: SortOption<Q>): void => {
         setSortAnchor(null);
@@ -141,28 +204,34 @@ export default function ListToolbar<Q extends BaseListQuery>({
         <Box sx={listToolbarSx()}>
             {leading}
 
-            <Button
-                variant="outlined"
-                startIcon={<FilterListRoundedIcon />}
-                onClick={(e) => setFilterAnchor(e.currentTarget)}
-                aria-haspopup="dialog"
-                sx={compactSecondaryButtonSx()}
-            >
-                {activeFilters > 0 ? `Filter (${activeFilters})` : "Filter"}
-            </Button>
+            {inlineSearch && (
+                <InlineSearch value={query.search} placeholder={searchLabel} onSearch={handleInlineSearch} />
+            )}
 
-            <Button
-                variant="outlined"
-                startIcon={<SortRoundedIcon />}
-                onClick={(e) => setSortAnchor(e.currentTarget)}
-                aria-haspopup="menu"
-                sx={compactSecondaryButtonSx()}
-            >
-                {currentSort.label}
-            </Button>
+            <Box sx={toolbarButtonsSx(inlineSearch)}>
+                <Button
+                    variant="outlined"
+                    startIcon={<FilterListRoundedIcon />}
+                    onClick={(e) => setFilterAnchor(e.currentTarget)}
+                    aria-haspopup="dialog"
+                    sx={toolbarButtonSx()}
+                >
+                    {activeFilters > 0 ? `Filter (${activeFilters})` : "Filter"}
+                </Button>
 
-            <Box sx={filterChipsSx()}>
-                {query.search.trim() && (
+                <Button
+                    variant="outlined"
+                    startIcon={<SortRoundedIcon />}
+                    onClick={(e) => setSortAnchor(e.currentTarget)}
+                    aria-haspopup="menu"
+                    sx={toolbarButtonSx()}
+                >
+                    {currentSort.label}
+                </Button>
+            </Box>
+
+            <Box sx={filterChipsSx(inlineSearch)}>
+                {!inlineSearch && query.search.trim() && (
                     <Chip
                         label={`Search: ${query.search}`}
                         onDelete={() => onChange({ ...query, search: defaultQuery.search })}
@@ -190,6 +259,7 @@ export default function ListToolbar<Q extends BaseListQuery>({
                     initial={query}
                     searchLabel={searchLabel}
                     filters={filters}
+                    showSearch={!inlineSearch}
                     onApply={applyFilters}
                     onClear={handleClear}
                 />

@@ -15,15 +15,12 @@ type VehiclePickerDialogProps = {
     title: string;
     description?: string;
     confirmLabel: string;
-    /** Pojazd, który już jest w kursie – nie da się go wybrać ponownie. */
     currentVehicleId?: number;
-    /** Ile jednostek ładowności zajmują już przesyłki w kursie – mniejsze pojazdy są niedostępne. */
-    requiredCapacity?: number;
+     requiredCapacity?: number;
     onClose: () => void;
     onSubmit: (vehicleId: number) => Promise<void>;
 };
 
-/** Wybór aktywnego pojazdu – dla POST /trips i PATCH /trips/{id}/vehicle. */
 export default function VehiclePickerDialog({
     title, description, confirmLabel, currentVehicleId, requiredCapacity = 0, onClose, onSubmit,
 }: VehiclePickerDialogProps) {
@@ -34,7 +31,7 @@ export default function VehiclePickerDialog({
 
     useEffect(() => {
         let cancelled = false;
-        getVehicles(0, 100, { ...DEFAULT_VEHICLE_QUERY, status: "active", sort: "brand" })
+        getVehicles(0, 100, { ...DEFAULT_VEHICLE_QUERY, status: "active", sort: "registrationNumber", direction: "asc" })
             .then((result) => {
                 if (!cancelled) setVehicles(result.content);
             })

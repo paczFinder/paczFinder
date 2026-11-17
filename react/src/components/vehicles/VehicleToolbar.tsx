@@ -23,14 +23,12 @@ const FILTERS: FilterField<VehicleQuery>[] = [
 ];
 
 const SORT_OPTIONS: SortOption<VehicleQuery>[] = [
-    { label: "Oldest first", sort: "id", direction: "asc" },
-    { label: "Newest first", sort: "id", direction: "desc" },
-    { label: "Brand A–Z", sort: "brand", direction: "asc" },
-    { label: "Brand Z–A", sort: "brand", direction: "desc" },
-    { label: "Model A–Z", sort: "model", direction: "asc" },
     { label: "Registration A–Z", sort: "registrationNumber", direction: "asc" },
+    { label: "Registration Z–A", sort: "registrationNumber", direction: "desc" },
     { label: "Capacity: low to high", sort: "capacity", direction: "asc" },
     { label: "Capacity: high to low", sort: "capacity", direction: "desc" },
+    { label: "Newest first", sort: "id", direction: "desc" },
+    { label: "Oldest first", sort: "id", direction: "asc" },
 ];
 
 type VehicleToolbarProps = {
@@ -47,6 +45,7 @@ export default function VehicleToolbar({ query, onChange }: VehicleToolbarProps)
             filters={FILTERS}
             sortOptions={SORT_OPTIONS}
             onChange={onChange}
+            inlineSearch
         />
     );
 }

@@ -4,7 +4,6 @@ import type { SortDirection } from "../utils/listQuery";
 export type DeliverySize = "S" | "M" | "L";
 export type DeliveryStatus = "ADDED" | "IN_DELIVERY" | "DELIVERED";
 
-/** Ile jednostek ładowności pojazdu zajmuje paczka danego rozmiaru (jak DeliverySize w backendzie). */
 export const DELIVERY_LOAD_UNITS: Record<DeliverySize, number> = { S: 1, M: 2, L: 4 };
 
 export interface Delivery {
@@ -42,8 +41,11 @@ export const formatAddress = (d: Pick<Delivery, "street" | "buildingNumber" | "a
 
 export type DeliverySortField = "id" | "recipientName" | "city";
 
+export type DeliveryScope = "all" | "available";
+
 export interface DeliveryQuery {
     search: string;
+    scope: DeliveryScope;
     status: "all" | DeliveryStatus;
     size: "all" | DeliverySize;
     sort: DeliverySortField;
@@ -52,6 +54,7 @@ export interface DeliveryQuery {
 
 export const DEFAULT_DELIVERY_QUERY: DeliveryQuery = {
     search: "",
+    scope: "all",
     status: "all",
     size: "all",
     sort: "id",
@@ -71,26 +74,20 @@ const deliveryParams = (page: number, size: number, query: DeliveryQuery, withSt
     return params.toString();
 };
 
-/** GET /deliveries?page=&size=&search=&status=&deliverySize=&sort=&direction= */
 export const getDeliveries = (page: number, size: number, query: DeliveryQuery = DEFAULT_DELIVERY_QUERY) =>
     apiRequest<Paginated<Delivery>>(`/deliveries?${deliveryParams(page, size, query, true)}`);
 
-/** GET /deliveries/available – przesyłki, które nie są jeszcze w żadnym kursie (te same filtry poza statusem) */
 export const getAvailableDeliveries = (page: number, size: number, query: DeliveryQuery = DEFAULT_DELIVERY_QUERY) =>
     apiRequest<Paginated<Delivery>>(`/deliveries/available?${deliveryParams(page, size, query, false)}`);
 
-/** GET /deliveries/{id} */
 export const getDelivery = (id: number) =>
     apiRequest<Delivery>(`/deliveries/${id}`);
 
-/** POST /deliveries */
 export const createDelivery = (payload: DeliveryPayload) =>
     apiRequest<Delivery>("/deliveries", { method: "POST", body: payload });
 
-/** PUT /deliveries/{id} */
 export const updateDelivery = (id: number, payload: DeliveryPayload) =>
     apiRequest<Delivery>(`/deliveries/${id}`, { method: "PUT", body: payload });
 
-/** DELETE /deliveries/{id} */
 export const deleteDelivery = (id: number) =>
     apiRequest<void>(`/deliveries/${id}`, { method: "DELETE" });

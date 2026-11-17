@@ -5,7 +5,6 @@ import {
     TableHead, TablePagination, TableRow, Tooltip, Typography,
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import PersonAddAlt1RoundedIcon from "@mui/icons-material/PersonAddAlt1Rounded";
@@ -41,6 +40,7 @@ type DialogState =
     | { type: "edit"; vehicle: Vehicle }
     | { type: "details"; vehicleId: number }
     | { type: "courier"; vehicle: Vehicle }
+    | { type: "unassign"; vehicle: Vehicle }
     | { type: "delete"; vehicle: Vehicle }
     | null;
 
@@ -62,7 +62,6 @@ export default function VehiclePage() {
     const [busyId, setBusyId] = useState<number | null>(null);
     const [notice, setNotice] = useState<Notice>(null);
 
-    // GET /vehicles?page=&size=
     useEffect(() => {
         let cancelled = false;
         getVehicles(page, rowsPerPage, query)
@@ -96,7 +95,6 @@ export default function VehiclePage() {
         setPage(newPage);
     };
 
-    // zmiana filtrów lub sortowania – wróć na pierwszą stronę
     const handleQueryChange = (newQuery: VehicleQuery): void => {
         setLoading(true);
         setQuery(newQuery);
@@ -109,7 +107,6 @@ export default function VehiclePage() {
         setPage(0);
     };
 
-    // POST /vehicles
     const handleCreate = async (payload: VehiclePayload): Promise<void> => {
         await createVehicle(payload);
         closeDialog();
@@ -117,7 +114,6 @@ export default function VehiclePage() {
         reload();
     };
 
-    // PUT /vehicles/{id}
     const handleUpdate = async (id: number, payload: VehiclePayload): Promise<void> => {
         await updateVehicle(id, payload);
         closeDialog();
@@ -125,7 +121,6 @@ export default function VehiclePage() {
         reload();
     };
 
-    // PATCH /vehicles/{id}/courier
     const handleAssignCourier = async (id: number, keycloakUserId: string): Promise<void> => {
         await assignCourier(id, keycloakUserId);
         closeDialog();
@@ -133,12 +128,10 @@ export default function VehiclePage() {
         reload();
     };
 
-    // DELETE /vehicles/{id}
     const handleDelete = async (id: number): Promise<void> => {
         await deleteVehicle(id);
         closeDialog();
         showSuccess("Vehicle deleted.");
-        // usunięto ostatni pojazd na stronie – wróć do poprzedniej
         if (data && data.content.length === 1 && page > 0) {
             setLoading(true);
             setPage(page - 1);
@@ -147,7 +140,13 @@ export default function VehiclePage() {
         }
     };
 
-    // Akcje bez dialogu: DELETE /vehicles/{id}/courier, PATCH /activate, DELETE /deactivate
+    const handleUnassignCourier = async (id: number): Promise<void> => {
+        await unassignCourier(id);
+        closeDialog();
+        showSuccess("Courier unassigned.");
+        reload();
+    };
+
     const runRowAction = async (id: number, action: () => Promise<unknown>, successMessage: string): Promise<void> => {
         setBusyId(id);
         try {
@@ -160,9 +159,6 @@ export default function VehiclePage() {
             setBusyId(null);
         }
     };
-
-    const handleUnassignCourier = (vehicle: Vehicle) =>
-        runRowAction(vehicle.id, () => unassignCourier(vehicle.id), "Courier unassigned.");
 
     const handleToggleActive = (vehicle: Vehicle) =>
         vehicle.active
@@ -184,15 +180,6 @@ export default function VehiclePage() {
                 </Box>
 
                 <Box sx={headerActionsSx()}>
-                    <Button
-                        variant="outlined"
-                        startIcon={<RefreshRoundedIcon />}
-                        onClick={reload}
-                        disabled={loading}
-                        sx={compactSecondaryButtonSx()}
-                    >
-                        Refresh
-                    </Button>
                     <Button
                         variant="contained"
                         startIcon={<AddRoundedIcon />}
@@ -332,7 +319,7 @@ export default function VehiclePage() {
                                                                     size="small"
                                                                     aria-label="Unassign courier"
                                                                     disabled={busy}
-                                                                    onClick={() => void handleUnassignCourier(vehicle)}
+                                                                    onClick={() => setDialog({ type: "unassign", vehicle })}
                                                                     sx={actionIconSx()}
                                                                 >
                                                                     <PersonRemoveRoundedIcon fontSize="small" />
@@ -429,10 +416,21 @@ export default function VehiclePage() {
                 />
             )}
 
+            {dialog?.type === "unassign" && (
+                <ConfirmDialog
+                    title="Unassign courier"
+                    message={`Are you sure you want to unassign the courier from ${dialog.vehicle.brand} ${dialog.vehicle.model} (${dialog.vehicle.registrationNumber})?`}
+                    confirmLabel="Unassign"
+                    danger
+                    onClose={closeDialog}
+                    onConfirm={() => handleUnassignCourier(dialog.vehicle.id)}
+                />
+            )}
+
             {dialog?.type === "delete" && (
                 <ConfirmDialog
                     title="Delete vehicle"
-                    message={`Delete ${dialog.vehicle.brand} ${dialog.vehicle.model} (${dialog.vehicle.registrationNumber})? This cannot be undone.`}
+                    message={`Are you sure you want to delete ${dialog.vehicle.brand} ${dialog.vehicle.model} ${dialog.vehicle.registrationNumber}?`}
                     confirmLabel="Delete"
                     danger
                     onClose={closeDialog}

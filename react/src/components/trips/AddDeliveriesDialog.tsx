@@ -20,7 +20,6 @@ import {
 type AddDeliveriesDialogProps = {
     trip: Trip;
     onClose: () => void;
-    /** Jedna przesyłka -> POST /trips/{id}/deliveries, kilka -> POST /trips/{id}/deliveries/batch */
     onSubmit: (deliveryIds: number[]) => Promise<void>;
 };
 
@@ -135,9 +134,7 @@ export default function AddDeliveriesDialog({ trip, onClose, onSubmit }: AddDeli
                     disabled={saving || selected.length === 0 || overCapacity}
                     sx={compactPrimaryButtonSx()}
                 >
-                    {saving
-                        ? <CircularProgress size={22} sx={spinnerSx()} />
-                        : selected.length > 1 ? `Add ${selected.length} deliveries` : "Add delivery"}
+                    {saving ? <CircularProgress size={22} sx={spinnerSx()} /> : "Add"}
                 </Button>
             </DialogActions>
         </Dialog>

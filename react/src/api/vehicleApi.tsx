@@ -19,7 +19,7 @@ export interface VehiclePayload {
     courierKeycloakId: string | null;
 }
 
-export type VehicleSortField = "id" | "brand" | "model" | "registrationNumber" | "capacity";
+export type VehicleSortField = "id" | "registrationNumber" | "capacity";
 export type VehicleStatusFilter = "all" | "active" | "inactive";
 export type VehicleCourierFilter = "all" | "assigned" | "unassigned";
 
@@ -39,7 +39,6 @@ export const DEFAULT_VEHICLE_QUERY: VehicleQuery = {
     direction: "asc",
 };
 
-/** GET /vehicles?page=&size=&search=&active=&hasCourier=&sort=&direction= */
 export const getVehicles = (page: number, size: number, query: VehicleQuery = DEFAULT_VEHICLE_QUERY) => {
     const params = new URLSearchParams({
         page: String(page),
@@ -54,34 +53,26 @@ export const getVehicles = (page: number, size: number, query: VehicleQuery = DE
     return apiRequest<Paginated<Vehicle>>(`/vehicles?${params.toString()}`);
 };
 
-/** GET /vehicles/{id} */
 export const getVehicle = (id: number) =>
     apiRequest<Vehicle>(`/vehicles/${id}`);
 
-/** POST /vehicles */
 export const createVehicle = (payload: VehiclePayload) =>
     apiRequest<Vehicle>("/vehicles", { method: "POST", body: payload });
 
-/** PUT /vehicles/{id} */
 export const updateVehicle = (id: number, payload: VehiclePayload) =>
     apiRequest<Vehicle>(`/vehicles/${id}`, { method: "PUT", body: payload });
 
-/** PATCH /vehicles/{id}/courier */
 export const assignCourier = (id: number, keycloakUserId: string) =>
     apiRequest<Vehicle>(`/vehicles/${id}/courier`, { method: "PATCH", body: { keycloakUserId } });
 
-/** DELETE /vehicles/{id}/courier */
 export const unassignCourier = (id: number) =>
     apiRequest<Vehicle>(`/vehicles/${id}/courier`, { method: "DELETE" });
 
-/** PATCH /vehicles/{id}/activate */
 export const activateVehicle = (id: number) =>
     apiRequest<void>(`/vehicles/${id}/activate`, { method: "PATCH" });
 
-/** DELETE /vehicles/{id}/deactivate */
 export const deactivateVehicle = (id: number) =>
     apiRequest<void>(`/vehicles/${id}/deactivate`, { method: "DELETE" });
 
-/** DELETE /vehicles/{id} */
 export const deleteVehicle = (id: number) =>
     apiRequest<void>(`/vehicles/${id}`, { method: "DELETE" });
