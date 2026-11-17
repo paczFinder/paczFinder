@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: osrm-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: osrm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: osrm
+  template:
+    metadata:
+      labels:
+        app: osrm
+    spec:
+      initContainers:
+        - name: copy-pbf
+          image: osrm
+          imagePullPolicy: IfNotPresent
+          command: ["sh", "-c", "cp /data/lodzkie-latest.osm.pbf /mnt/data/"]
+          volumeMounts:
+            - name: osrm-data
+              mountPath: /mnt/data
+      containers:
+        - name: osrm
+          image: osrm
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              memory: "1Gi"
+            limits:
+              memory: "3Gi"
+          volumeMounts:
+            - name: osrm-data
+              mountPath: /data
+      volumes:
+        - name: osrm-data
+          persistentVolumeClaim:
+            claimName: osrm-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: osrm
+spec:
+  type: ClusterIP
+  selector:
+    app: osrm
+  ports:
+    - port: 5000
+      targetPort: 5000
