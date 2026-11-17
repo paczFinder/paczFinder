@@ -300,6 +300,34 @@ paths:
           type: integer
           format: int32
           default: 20
+      - name: search
+        in: query
+        description: "Fragment odbiorcy, telefonu, ulicy, miasta lub kodu pocztowego"
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: OK
+        schema:
+          type: string
+          enum: [ADDED, IN_DELIVERY, DELIVERED]
+      - name: deliverySize
+        in: query
+        schema:
+          type: string
+          enum: [S, M, L]
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum: [id, recipientName, city]
+          default: id
+      - name: direction
+        in: query
+        schema:
+          type: string
+          enum: [asc, desc]
+          default: asc
       responses:
         "200":
           description: OK
@@ -343,6 +371,34 @@ paths:
           type: integer
           format: int32
           default: 20
+      - name: search
+        in: query
+        description: "Fragment odbiorcy, telefonu, ulicy, miasta lub kodu pocztowego"
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: OK
+        schema:
+          type: string
+          enum: [ADDED, IN_DELIVERY, DELIVERED]
+      - name: deliverySize
+        in: query
+        schema:
+          type: string
+          enum: [S, M, L]
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum: [id, recipientName, city]
+          default: id
+      - name: direction
+        in: query
+        schema:
+          type: string
+          enum: [asc, desc]
+          default: asc
       responses:
         "200":
           description: OK
@@ -430,6 +486,28 @@ paths:
           type: integer
           format: int32
           default: 20
+      - name: search
+        in: query
+        description: "Fragment marki, modelu lub numeru rejestracyjnego pojazdu"
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum: [ADDED, FINISHED]
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum: [id, vehicle.registrationNumber, vehicle.brand]
+          default: id
+      - name: direction
+        in: query
+        schema:
+          type: string
+          enum: [asc, desc]
+          default: asc
       responses:
         "200":
           description: OK
@@ -627,6 +705,33 @@ paths:
           type: integer
           format: int32
           default: 20
+      - name: search
+        in: query
+        description: "Fragment marki, modelu lub numeru rejestracyjnego (bez rozróżniania wielkości liter)"
+        schema:
+          type: string
+      - name: active
+        in: query
+        description: "true = tylko aktywne, false = tylko nieaktywne"
+        schema:
+          type: boolean
+      - name: hasCourier
+        in: query
+        description: "true = z przypisanym kurierem, false = bez kuriera"
+        schema:
+          type: boolean
+      - name: sort
+        in: query
+        schema:
+          type: string
+          enum: [id, registrationNumber, capacity]
+          default: id
+      - name: direction
+        in: query
+        schema:
+          type: string
+          enum: [asc, desc]
+          default: asc
       responses:
         "200":
           description: OK
@@ -634,6 +739,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/PaginatedResponseVehicleResponse"
+        "400":
+          description: Niedozwolone pole sortowania lub kierunek
       summary: Find All
       tags:
       - Vehicle Resource

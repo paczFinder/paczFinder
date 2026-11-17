@@ -1,10 +1,12 @@
 package com.delivery.resource;
 
 import com.delivery.dto.CreateDeliveryRequest;
+import com.delivery.dto.DeliveryFilter;
 import com.delivery.dto.DeliveryResponse;
 import com.delivery.dto.PaginatedResponse;
 import com.delivery.service.DeliveryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
@@ -32,18 +34,40 @@ public class DeliveryResource {
     @GET
     public PaginatedResponse<DeliveryResponse> findAll(
             @QueryParam("page") @DefaultValue("0") int page,
-            @QueryParam("size") @DefaultValue("20") int size
+            @QueryParam("size") @DefaultValue("20") int size,
+            @QueryParam("search") String search,
+            @QueryParam("status")
+            @Pattern(regexp = "(?i)|ADDED|IN_DELIVERY|DELIVERED",
+                    message = "Invalid status. Allowed: ADDED, IN_DELIVERY, DELIVERED") String status,
+            @QueryParam("deliverySize")
+            @Pattern(regexp = "(?i)|S|M|L", message = "Invalid deliverySize. Allowed: S, M, L") String deliverySize,
+            @QueryParam("sort") @DefaultValue("id")
+            @Pattern(regexp = "id|recipientName|city",
+                    message = "Cannot sort by this field. Allowed: id, recipientName, city") String sort,
+            @QueryParam("direction") @DefaultValue("asc")
+            @Pattern(regexp = "(?i)asc|desc", message = "Sort direction must be 'asc' or 'desc'") String direction
     ) {
-        return deliveryService.findAll(page, size);
+        return deliveryService.findAll(page, size, new DeliveryFilter(search, status, deliverySize, sort, direction));
     }
 
     @GET
     @Path("/available")
     public PaginatedResponse<DeliveryResponse> findAvailable(
             @QueryParam("page") @DefaultValue("0") int page,
-            @QueryParam("size") @DefaultValue("20") int size
+            @QueryParam("size") @DefaultValue("20") int size,
+            @QueryParam("search") String search,
+            @QueryParam("status")
+            @Pattern(regexp = "(?i)|ADDED|IN_DELIVERY|DELIVERED",
+                    message = "Invalid status. Allowed: ADDED, IN_DELIVERY, DELIVERED") String status,
+            @QueryParam("deliverySize")
+            @Pattern(regexp = "(?i)|S|M|L", message = "Invalid deliverySize. Allowed: S, M, L") String deliverySize,
+            @QueryParam("sort") @DefaultValue("id")
+            @Pattern(regexp = "id|recipientName|city",
+                    message = "Cannot sort by this field. Allowed: id, recipientName, city") String sort,
+            @QueryParam("direction") @DefaultValue("asc")
+            @Pattern(regexp = "(?i)asc|desc", message = "Sort direction must be 'asc' or 'desc'") String direction
     ) {
-        return deliveryService.findAvailable(page, size);
+        return deliveryService.findAvailable(page, size, new DeliveryFilter(search, status, deliverySize, sort, direction));
     }
 
     @GET
