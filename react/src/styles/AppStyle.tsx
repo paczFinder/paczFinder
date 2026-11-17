@@ -97,6 +97,90 @@ export const homeCardSx = () => ({
     textAlign: "center",
 });
 
+export const mapBoxSx = () => ({
+    width: "100%",
+    height: { xs: 400, md: "calc(100vh - 320px)" },
+    minHeight: 400,
+    borderRadius: "8px",
+    overflow: "hidden",
+});
+
+export const DELIVERY_PIN_COLORS = {
+    ADDED: palette.grey[600],
+    IN_DELIVERY: palette.primary.main,
+    DELIVERED: palette.success.main,
+} as const;
+
+export const SEARCH_PIN_COLOR = palette.error.main;
+export const ADDED_PIN_COLOR = palette.warning.main;
+
+export const mapSearchSx = () => ({
+    ...inlineSearchSx(),
+    "& .MuiFormControl-root, & .MuiOutlinedInput-root": { height: "100%" },
+});
+
+export const mapToolbarSx = () => ({
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: 2,
+    mb: 2,
+});
+
+export const mapPickerSx = () => ({
+    width: { xs: "100%", sm: 405 },
+});
+
+export const mapLegendSx = () => ({
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: 2,
+    ml: { sm: "auto" },
+    color: palette.text.secondary,
+    fontSize: 14,
+});
+
+export const mapLegendItemSx = () => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 0.75,
+});
+
+export const mapLegendDotSx = (color: string) => ({
+    width: 12,
+    height: 12,
+    borderRadius: "50%",
+    bgcolor: color,
+});
+
+export const mapAlertSx = () => ({
+    mb: 2,
+});
+
+export const mapProgressSx = () => ({
+    width: "100%",
+    mb: 1,
+});
+
+export const mapPopupSx = () => ({
+    display: "flex",
+    flexDirection: "column",
+    gap: 0.25,
+    minWidth: 200,
+    "& .MuiTypography-root": { m: 0 },
+});
+
+export const mapPopupDividerSx = () => ({
+    my: 0.5,
+});
+
+export const mapPopupChipsSx = () => ({
+    display: "flex",
+    gap: 1,
+    mt: 0.5,
+});
+
 export const headingSx = () => ({
     color: palette.text.primary,
     fontWeight: 700,

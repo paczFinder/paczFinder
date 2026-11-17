@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
 import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import MapRoundedIcon from "@mui/icons-material/MapRounded";
 import DirectionsCarRoundedIcon from "@mui/icons-material/DirectionsCarRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import RouteRoundedIcon from "@mui/icons-material/RouteRounded";
@@ -17,12 +18,17 @@ type NavItem = {
     label: string;
     path: string;
     icon: ReactNode;
-    /** Jeśli podane – przycisk widzą tylko użytkownicy z jedną z tych ról. */
     roles?: readonly Role[];
 };
 
 const NAV_ITEMS: NavItem[] = [
     { label: "Home", path: "/home", icon: <HomeRoundedIcon /> },
+    {
+        label: "Map",
+        path: "/map",
+        icon: <MapRoundedIcon />,
+        roles: [ROLES.DISPATCHER, ROLES.ADMIN],
+    },
     {
         label: "Vehicles",
         path: "/vehicles",
