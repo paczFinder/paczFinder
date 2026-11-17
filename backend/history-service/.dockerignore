@@ -1,0 +1,14 @@
+# allow files needed for Maven build
+*
+!mvnw
+!mvnw.cmd
+!.mvn/
+!.mvn/**
+!pom.xml
+!src/
+!src/**
+
+!target/*-runner
+!target/*-runner.jar
+!target/lib/*
+!target/quarkus-app/*
