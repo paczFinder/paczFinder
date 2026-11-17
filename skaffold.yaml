@@ -84,7 +84,7 @@ portForward:
   - resourceType: service
     resourceName: backend-routing-service
     port: 8080
-    localPort: 8083 # localhost:8083
+    localPort: 8084 # localhost:8084
   - resourceType: service
     resourceName: osrm
     port: 5000

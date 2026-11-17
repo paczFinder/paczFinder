@@ -33,4 +33,4 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30082
+      nodePort: 30084 # http://localhost:30084
