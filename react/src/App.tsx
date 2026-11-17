@@ -5,6 +5,7 @@ import WelcomePage from "./pages/auth/WelcomePage.tsx";
 import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/auth/RegisterPage.tsx";
 import LoginPage from "./pages/auth/LoginPage.tsx";
+import MapPage from "./pages/dispatcher/MapPage";
 import VehiclePage from "./pages/dispatcher/VehiclePage";
 import DeliveryPage from "./pages/dispatcher/DeliveryPage";
 import TripPage from "./pages/dispatcher/TripPage";
@@ -30,6 +31,15 @@ function App() {
                         isAuthenticated()
                             ? <HomePage />
                             : <Navigate to="/" replace />
+                    }
+                />
+
+                <Route
+                    path="/map"
+                    element={
+                        <ProtectedRoute roles={[ROLES.DISPATCHER, ROLES.ADMIN]}>
+                            <MapPage />
+                        </ProtectedRoute>
                     }
                 />
 
