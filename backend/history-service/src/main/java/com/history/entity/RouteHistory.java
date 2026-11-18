@@ -42,6 +42,9 @@ public class RouteHistory {
     @Column(name = "calculated_at", nullable = false)
     public Instant calculatedAt = Instant.now();
 
+    @Column(name = "courier_keycloak_id")
+    public String courierKeycloakId;
+
     @OneToMany(mappedBy = "routeHistory", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<RouteHistoryStop> stops = new ArrayList<>();
 }

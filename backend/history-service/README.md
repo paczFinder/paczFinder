@@ -56,6 +56,7 @@ erDiagram
         BIGINT service_time_s
         BIGINT total_time_s
         TIMESTAMP calculated_at
+        STRING courier_keycloak_id
     }
 
     ROUTE_HISTORY_STOPS {
@@ -83,6 +84,7 @@ erDiagram
 | `service_time_s` | BIGINT | NOT NULL | Czas obsługi |
 | `total_time_s` | BIGINT | NOT NULL | Całkowity czas trasy |
 | `calculated_at` | TIMESTAMP WITH TIME ZONE | NOT NULL | Czas wygenerowania snapshotu |
+| `courier_keycloak_id` | VARCHAR(255) | NOT NULL | ID kierowcy w Keycloak |
 
 ### `route_history_stops`
 
