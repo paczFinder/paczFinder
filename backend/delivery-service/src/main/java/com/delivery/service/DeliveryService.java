@@ -1,6 +1,7 @@
 package com.delivery.service;
 
 import com.delivery.dto.CreateDeliveryRequest;
+import com.delivery.dto.DeliveryFilter;
 import com.delivery.dto.DeliveryResponse;
 import com.delivery.dto.PaginatedResponse;
 import com.delivery.entity.Delivery;
@@ -27,12 +28,12 @@ public class DeliveryService {
         this.tripRepository = tripRepository;
     }
 
-    public PaginatedResponse<DeliveryResponse> findAll(int page, int size) {
+    public PaginatedResponse<DeliveryResponse> findAll(int page, int size, DeliveryFilter filter) {
         int pageIndex = Math.max(page, 0);
         int pageSize = Math.max(size, 1);
 
-        List<Delivery> deliveries = deliveryRepository.findPaginated(pageIndex, pageSize);
-        long totalElements = deliveryRepository.count();
+        List<Delivery> deliveries = deliveryRepository.findPaginated(pageIndex, pageSize, filter, false);
+        long totalElements = deliveryRepository.count(filter, false);
         int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
         return new PaginatedResponse<>(
@@ -46,12 +47,12 @@ public class DeliveryService {
         );
     }
 
-    public PaginatedResponse<DeliveryResponse> findAvailable(int page, int size) {
+    public PaginatedResponse<DeliveryResponse> findAvailable(int page, int size, DeliveryFilter filter) {
         int pageIndex = Math.max(page, 0);
         int pageSize = Math.max(size, 1);
 
-        List<Delivery> deliveries = deliveryRepository.findAvailablePaginated(pageIndex, pageSize);
-        long totalElements = deliveryRepository.count("status", com.delivery.enums.DeliveryStatus.ADDED);
+        List<Delivery> deliveries = deliveryRepository.findPaginated(pageIndex, pageSize, filter, true);
+        long totalElements = deliveryRepository.count(filter, true);
         int totalPages = (int) Math.ceil((double) totalElements / pageSize);
 
         return new PaginatedResponse<>(

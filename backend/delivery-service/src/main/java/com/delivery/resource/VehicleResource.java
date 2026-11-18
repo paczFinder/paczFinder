@@ -3,9 +3,11 @@ package com.delivery.resource;
 import com.delivery.dto.AssignCourierRequest;
 import com.delivery.dto.CreateVehicleRequest;
 import com.delivery.dto.PaginatedResponse;
+import com.delivery.dto.VehicleFilter;
 import com.delivery.dto.VehicleResponse;
 import com.delivery.service.VehicleService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
@@ -34,9 +36,17 @@ public class VehicleResource {
     @GET
     public PaginatedResponse<VehicleResponse> findAll(
             @QueryParam("page") @DefaultValue("0") int page,
-            @QueryParam("size") @DefaultValue("20") int size
+            @QueryParam("size") @DefaultValue("20") int size,
+            @QueryParam("search") String search,
+            @QueryParam("active") Boolean active,
+            @QueryParam("hasCourier") Boolean hasCourier,
+            @QueryParam("sort") @DefaultValue("id")
+            @Pattern(regexp = "id|registrationNumber|capacity",
+                    message = "Cannot sort by this field. Allowed: id, registrationNumber, capacity") String sort,
+            @QueryParam("direction") @DefaultValue("asc")
+            @Pattern(regexp = "(?i)asc|desc", message = "Sort direction must be 'asc' or 'desc'") String direction
     ) {
-        return vehicleService.findAll(page, size);
+        return vehicleService.findAll(page, size, new VehicleFilter(search, active, hasCourier, sort, direction));
     }
 
     @GET

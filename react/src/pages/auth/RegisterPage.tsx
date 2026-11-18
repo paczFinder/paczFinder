@@ -10,19 +10,19 @@ import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import { registerUser, type RegisterRole } from "../api/authApi";
-import { loginWithPassword } from "../api/authApi";
+import { registerUser, type RegisterRole } from "../../api/authApi.tsx";
+import { loginWithPassword } from "../../api/authApi.tsx";
 import {
     emailRegex, nameRegex, surnameRegex, passwordRegex,
     uppercaseRegex, lowercaseRegex, numberRegex, specialCharRegex,
     nameOnlyRegex,
-} from "../utils/validation";
+} from "../../utils/validation.ts";
 import {
     alertSx, backButtonSx, fieldSx, formSx, logoButtonSx, logoIconSx,
     pageSx, paperSx, passwordToggleSx, primaryButtonSx, spinnerSx,
     subtitleSx, titleSx, requirementIconSx, requirementLabelSx,
     requirementRowSx, requirementsListSx,
-} from "../styles/LoginStyle";
+} from "../../styles/LoginStyle.tsx";
 
 const RequirementRow = ({ valid, label }: { valid: boolean; label: string }) => (
     <Box sx={requirementRowSx()}>

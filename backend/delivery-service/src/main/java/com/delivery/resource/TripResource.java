@@ -6,9 +6,11 @@ import com.delivery.dto.ChangeTripVehicleRequest;
 import com.delivery.dto.CreateTripRequest;
 import com.delivery.dto.DeliveryResponse;
 import com.delivery.dto.PaginatedResponse;
+import com.delivery.dto.TripFilter;
 import com.delivery.dto.TripResponse;
 import com.delivery.service.TripService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.DefaultValue;
@@ -38,9 +40,17 @@ public class TripResource {
     @GET
     public PaginatedResponse<TripResponse> findAll(
             @QueryParam("page") @DefaultValue("0") int page,
-            @QueryParam("size") @DefaultValue("20") int size
+            @QueryParam("size") @DefaultValue("20") int size,
+            @QueryParam("search") String search,
+            @QueryParam("status")
+            @Pattern(regexp = "(?i)|ADDED|FINISHED", message = "Invalid status. Allowed: ADDED, FINISHED") String status,
+            @QueryParam("sort") @DefaultValue("id")
+            @Pattern(regexp = "id|vehicle\\.registrationNumber|vehicle\\.brand",
+                    message = "Cannot sort by this field. Allowed: id, vehicle.registrationNumber, vehicle.brand") String sort,
+            @QueryParam("direction") @DefaultValue("asc")
+            @Pattern(regexp = "(?i)asc|desc", message = "Sort direction must be 'asc' or 'desc'") String direction
     ) {
-        return tripService.findAll(page, size);
+        return tripService.findAll(page, size, new TripFilter(search, status, sort, direction));
     }
 
     @GET

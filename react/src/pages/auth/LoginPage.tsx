@@ -9,13 +9,13 @@ import {
 import LocalShippingRoundedIcon from "@mui/icons-material/LocalShippingRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import VisibilityOffRoundedIcon from "@mui/icons-material/VisibilityOffRounded";
-import { isAuthenticated, loginWithPassword } from "../api/authApi";
-import { emailRegex } from "../utils/validation";
+import { isAuthenticated, loginWithPassword } from "../../api/authApi.tsx";
+import { emailRegex } from "../../utils/validation.ts";
 import {
     alertSx, backButtonSx, devButtonSx, devButtonsRowSx, devDividerSx,
     fieldSx, formSx, logoButtonSx, logoIconSx, pageSx, paperSx,
     passwordToggleSx, primaryButtonSx, spinnerSx, subtitleSx, titleSx,
-} from "../styles/LoginStyle";
+} from "../../styles/LoginStyle.tsx";
 
 const MIN_PASSWORD_LENGTH = 8;
 
