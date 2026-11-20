@@ -34,6 +34,7 @@ mvn test
 | POST | `/deliveries` | Tworzy nową dostawę |
 | PUT | `/deliveries/{id}` | Aktualizuje dostawę |
 | DELETE | `/deliveries/{id}` | Usuwa dostawę |
+| PATCH | `/deliveries/{id}/status` | Aktualizuje status jednej paczki |
 
 ### Trips — `/trips`
 

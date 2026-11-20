@@ -265,6 +265,13 @@ components:
       enum:
       - ADDED
       - FINISHED
+    UpdateDeliveryStatusRequest:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          $ref: "#/components/schemas/DeliveryStatus"
     VehicleResponse:
       type: object
       properties:
@@ -469,6 +476,31 @@ paths:
             application/json:
               schema: {}
       summary: Delete
+      tags:
+      - Delivery Resource
+  /deliveries/{id}/status:
+    patch:
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDeliveryStatusRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryResponse"
+      summary: Update Status
       tags:
       - Delivery Resource
   /trips:

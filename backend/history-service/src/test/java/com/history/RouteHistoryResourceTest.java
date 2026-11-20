@@ -1,6 +1,7 @@
 package com.history;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.MethodOrderer;
@@ -15,6 +16,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
+@TestSecurity(user = "dispatcher-test", roles = {"DISPATCHER"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RouteHistoryResourceTest {
 

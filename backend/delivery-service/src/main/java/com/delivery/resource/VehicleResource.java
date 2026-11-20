@@ -6,6 +6,7 @@ import com.delivery.dto.PaginatedResponse;
 import com.delivery.dto.VehicleFilter;
 import com.delivery.dto.VehicleResponse;
 import com.delivery.service.VehicleService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.Consumes;
@@ -22,6 +23,7 @@ import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+@RolesAllowed({"ADMIN", "DISPATCHER"})
 @Path("/vehicles")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)

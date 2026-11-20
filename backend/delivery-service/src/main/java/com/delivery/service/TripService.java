@@ -175,7 +175,8 @@ public class TripService {
         }
 
         for (Delivery delivery : trip.deliveries) {
-            if (delivery.status != DeliveryStatus.IN_DELIVERY) {
+            if (delivery.status != DeliveryStatus.IN_DELIVERY
+                    && delivery.status != DeliveryStatus.DELIVERED) {
                 throw new BadRequestException("Delivery " + delivery.id + " is not in delivery");
             }
         }

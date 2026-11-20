@@ -6,7 +6,8 @@ CREATE TABLE route_history (
     driving_time_s BIGINT NOT NULL,
     service_time_s BIGINT NOT NULL,
     total_time_s BIGINT NOT NULL,
-    calculated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+    calculated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    courier_keycloak_id VARCHAR(255)
 );
 
 CREATE TABLE route_history_stops (
@@ -30,3 +31,6 @@ CREATE INDEX idx_route_history_stops_route_history_id
 
 CREATE INDEX idx_route_history_trip_id
     ON route_history (trip_id);
+
+CREATE INDEX idx_route_history_courier_keycloak_id
+    ON route_history (courier_keycloak_id);

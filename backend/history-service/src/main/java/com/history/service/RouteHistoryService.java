@@ -75,6 +75,21 @@ public class RouteHistoryService {
         return RouteHistoryResponse.from(routeHistory);
     }
 
+    public List<RouteHistoryResponse> findByTripIdAndCourier(Long tripId, String courierKeycloakId) {
+        return routeHistoryRepository.findByTripIdAndCourier(tripId, courierKeycloakId)
+                .stream()
+                .map(RouteHistoryResponse::from)
+                .toList();
+    }
+
+    public RouteHistoryResponse findLatestByTripIdAndCourier(Long tripId, String courierKeycloakId) {
+        RouteHistory routeHistory = routeHistoryRepository.findLatestByTripIdAndCourier(tripId, courierKeycloakId);
+        if (routeHistory == null) {
+            throw new NotFoundException("No route history found for trip ID: " + tripId);
+        }
+        return RouteHistoryResponse.from(routeHistory);
+    }
+
     @Transactional
     public RouteHistoryResponse create(CreateRouteHistoryRequest request) {
         if (routeHistoryRepository.findBySourceRoutePlanId(request.sourceRoutePlanId()) != null) {
@@ -84,6 +99,7 @@ public class RouteHistoryService {
         RouteHistory routeHistory = new RouteHistory();
         routeHistory.sourceRoutePlanId = request.sourceRoutePlanId();
         routeHistory.tripId = request.tripId();
+        routeHistory.courierKeycloakId = normalizeOwner(request.courierKeycloakId());
         routeHistory.totalDistanceM = request.totalDistanceM();
         routeHistory.drivingTimeS = request.drivingTimeS();
         routeHistory.serviceTimeS = request.serviceTimeS();
@@ -124,5 +140,13 @@ public class RouteHistoryService {
         }
 
         return routeHistory;
+    }
+
+    private String normalizeOwner(String owner) {
+        if (owner == null) {
+            return null;
+        }
+        String normalized = owner.trim();
+        return normalized.isEmpty() ? null : normalized;
     }
 }

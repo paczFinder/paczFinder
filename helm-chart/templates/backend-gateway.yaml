@@ -21,6 +21,12 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: "kubernetes"
+            - name: KEYCLOAK_ISSUER_URI
+              value: "http://localhost:30090/realms/auth-realm"
+            - name: KEYCLOAK_JWKS_URI
+              value: "http://keycloak:8080/realms/auth-realm/protocol/openid-connect/certs"
+            - name: KEYCLOAK_AUDIENCE
+              value: "paczfinder-api"
 ---
 apiVersion: v1
 kind: Service
