@@ -7,6 +7,7 @@ import MapRoundedIcon from "@mui/icons-material/MapRounded";
 import DirectionsCarRoundedIcon from "@mui/icons-material/DirectionsCarRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import RouteRoundedIcon from "@mui/icons-material/RouteRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { hasAnyRole, logout, ROLES, type Role } from "../api/authApi";
 import {
@@ -45,6 +46,12 @@ const NAV_ITEMS: NavItem[] = [
         label: "Trips",
         path: "/trips",
         icon: <RouteRoundedIcon />,
+        roles: [ROLES.DISPATCHER, ROLES.ADMIN],
+    },
+    {
+        label: "History",
+        path: "/history",
+        icon: <HistoryRoundedIcon />,
         roles: [ROLES.DISPATCHER, ROLES.ADMIN],
     },
     {

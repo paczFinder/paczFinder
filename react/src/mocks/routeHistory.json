@@ -1,0 +1,390 @@
+[
+  {
+    "id": 7,
+    "sourceRoutePlanId": 107,
+    "tripId": 4,
+    "totalDistanceM": 18450,
+    "drivingTimeS": 2940,
+    "serviceTimeS": 1200,
+    "totalTimeS": 4140,
+    "calculatedAt": "2026-11-24T14:32:10Z",
+    "courierKeycloakId": "7c8d9e0f-1a2b-4c3d-9e4f-5a6b7c8d9e0f",
+    "stops": [
+      {
+        "id": 30,
+        "routeHistoryId": 7,
+        "deliveryId": 31,
+        "stopOrder": 1,
+        "address": "Brzezińska 27, 92-103 Łódź",
+        "latitude": 51.79,
+        "longitude": 19.515
+      },
+      {
+        "id": 31,
+        "routeHistoryId": 7,
+        "deliveryId": 32,
+        "stopOrder": 2,
+        "address": "Widzewska 18, 92-301 Łódź",
+        "latitude": 51.761,
+        "longitude": 19.513
+      },
+      {
+        "id": 32,
+        "routeHistoryId": 7,
+        "deliveryId": 33,
+        "stopOrder": 3,
+        "address": "Rokicińska 144, 92-412 Łódź",
+        "latitude": 51.747,
+        "longitude": 19.542
+      },
+      {
+        "id": 33,
+        "routeHistoryId": 7,
+        "deliveryId": 34,
+        "stopOrder": 4,
+        "address": "Piłsudskiego 15, 90-307 Łódź",
+        "latitude": 51.7605,
+        "longitude": 19.485
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "sourceRoutePlanId": 106,
+    "tripId": 3,
+    "totalDistanceM": 12730,
+    "drivingTimeS": 2210,
+    "serviceTimeS": 1500,
+    "totalTimeS": 3710,
+    "calculatedAt": "2026-11-24T09:15:42Z",
+    "courierKeycloakId": "b3f1c2d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+    "stops": [
+      {
+        "id": 25,
+        "routeHistoryId": 6,
+        "deliveryId": 25,
+        "stopOrder": 1,
+        "address": "Kościuszki 41, 90-514 Łódź",
+        "latitude": 51.764,
+        "longitude": 19.452
+      },
+      {
+        "id": 26,
+        "routeHistoryId": 6,
+        "deliveryId": 26,
+        "stopOrder": 2,
+        "address": "Radwańska 28, 90-540 Łódź",
+        "latitude": 51.755,
+        "longitude": 19.45
+      },
+      {
+        "id": 27,
+        "routeHistoryId": 6,
+        "deliveryId": 27,
+        "stopOrder": 3,
+        "address": "Pabianicka 59, 93-490 Łódź",
+        "latitude": 51.7325,
+        "longitude": 19.432
+      },
+      {
+        "id": 28,
+        "routeHistoryId": 6,
+        "deliveryId": 28,
+        "stopOrder": 4,
+        "address": "Rzgowska 178, 93-172 Łódź",
+        "latitude": 51.7285,
+        "longitude": 19.471
+      },
+      {
+        "id": 29,
+        "routeHistoryId": 6,
+        "deliveryId": 29,
+        "stopOrder": 5,
+        "address": "Kilińskiego 210, 93-124 Łódź",
+        "latitude": 51.748,
+        "longitude": 19.4705
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "sourceRoutePlanId": 105,
+    "tripId": 3,
+    "totalDistanceM": 13980,
+    "drivingTimeS": 2460,
+    "serviceTimeS": 1500,
+    "totalTimeS": 3960,
+    "calculatedAt": "2026-11-24T08:47:05Z",
+    "courierKeycloakId": "b3f1c2d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+    "stops": [
+      {
+        "id": 20,
+        "routeHistoryId": 5,
+        "deliveryId": 25,
+        "stopOrder": 1,
+        "address": "Kościuszki 41, 90-514 Łódź",
+        "latitude": 51.764,
+        "longitude": 19.452
+      },
+      {
+        "id": 21,
+        "routeHistoryId": 5,
+        "deliveryId": 27,
+        "stopOrder": 2,
+        "address": "Pabianicka 59, 93-490 Łódź",
+        "latitude": 51.7325,
+        "longitude": 19.432
+      },
+      {
+        "id": 22,
+        "routeHistoryId": 5,
+        "deliveryId": 26,
+        "stopOrder": 3,
+        "address": "Radwańska 28, 90-540 Łódź",
+        "latitude": 51.755,
+        "longitude": 19.45
+      },
+      {
+        "id": 23,
+        "routeHistoryId": 5,
+        "deliveryId": 28,
+        "stopOrder": 4,
+        "address": "Rzgowska 178, 93-172 Łódź",
+        "latitude": 51.7285,
+        "longitude": 19.471
+      },
+      {
+        "id": 24,
+        "routeHistoryId": 5,
+        "deliveryId": 29,
+        "stopOrder": 5,
+        "address": "Kilińskiego 210, 93-124 Łódź",
+        "latitude": 51.748,
+        "longitude": 19.4705
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "sourceRoutePlanId": 104,
+    "tripId": 2,
+    "totalDistanceM": 9860,
+    "drivingTimeS": 1750,
+    "serviceTimeS": 900,
+    "totalTimeS": 2650,
+    "calculatedAt": "2026-11-23T16:05:33Z",
+    "courierKeycloakId": "7c8d9e0f-1a2b-4c3d-9e4f-5a6b7c8d9e0f",
+    "stops": [
+      {
+        "id": 17,
+        "routeHistoryId": 4,
+        "deliveryId": 18,
+        "stopOrder": 1,
+        "address": "Ogrodowa 17, 91-065 Łódź",
+        "latitude": 51.779,
+        "longitude": 19.448
+      },
+      {
+        "id": 18,
+        "routeHistoryId": 4,
+        "deliveryId": 19,
+        "stopOrder": 2,
+        "address": "Włókniarzy 241, 91-064 Łódź",
+        "latitude": 51.7795,
+        "longitude": 19.4215
+      },
+      {
+        "id": 19,
+        "routeHistoryId": 4,
+        "deliveryId": 20,
+        "stopOrder": 3,
+        "address": "Limanowskiego 133, 91-342 Łódź",
+        "latitude": 51.783,
+        "longitude": 19.429
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "sourceRoutePlanId": 103,
+    "tripId": 2,
+    "totalDistanceM": 11240,
+    "drivingTimeS": 1990,
+    "serviceTimeS": 1200,
+    "totalTimeS": 3190,
+    "calculatedAt": "2026-11-23T15:40:12Z",
+    "courierKeycloakId": "7c8d9e0f-1a2b-4c3d-9e4f-5a6b7c8d9e0f",
+    "stops": [
+      {
+        "id": 13,
+        "routeHistoryId": 3,
+        "deliveryId": 18,
+        "stopOrder": 1,
+        "address": "Ogrodowa 17, 91-065 Łódź",
+        "latitude": 51.779,
+        "longitude": 19.448
+      },
+      {
+        "id": 14,
+        "routeHistoryId": 3,
+        "deliveryId": 20,
+        "stopOrder": 2,
+        "address": "Limanowskiego 133, 91-342 Łódź",
+        "latitude": 51.783,
+        "longitude": 19.429
+      },
+      {
+        "id": 15,
+        "routeHistoryId": 3,
+        "deliveryId": 19,
+        "stopOrder": 3,
+        "address": "Włókniarzy 241, 91-064 Łódź",
+        "latitude": 51.7795,
+        "longitude": 19.4215
+      },
+      {
+        "id": 16,
+        "routeHistoryId": 3,
+        "deliveryId": 21,
+        "stopOrder": 4,
+        "address": "Zgierska 87, 91-462 Łódź",
+        "latitude": 51.796,
+        "longitude": 19.447
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "sourceRoutePlanId": 102,
+    "tripId": 1,
+    "totalDistanceM": 15320,
+    "drivingTimeS": 2680,
+    "serviceTimeS": 1800,
+    "totalTimeS": 4480,
+    "calculatedAt": "2026-11-22T10:22:48Z",
+    "courierKeycloakId": "b3f1c2d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+    "stops": [
+      {
+        "id": 7,
+        "routeHistoryId": 2,
+        "deliveryId": 11,
+        "stopOrder": 1,
+        "address": "Piotrkowska 104, 90-926 Łódź",
+        "latitude": 51.765,
+        "longitude": 19.4573
+      },
+      {
+        "id": 8,
+        "routeHistoryId": 2,
+        "deliveryId": 12,
+        "stopOrder": 2,
+        "address": "Narutowicza 65, 90-131 Łódź",
+        "latitude": 51.7712,
+        "longitude": 19.4762
+      },
+      {
+        "id": 9,
+        "routeHistoryId": 2,
+        "deliveryId": 13,
+        "stopOrder": 3,
+        "address": "Piłsudskiego 15, 90-307 Łódź",
+        "latitude": 51.7605,
+        "longitude": 19.485
+      },
+      {
+        "id": 10,
+        "routeHistoryId": 2,
+        "deliveryId": 14,
+        "stopOrder": 4,
+        "address": "Kilińskiego 210, 93-124 Łódź",
+        "latitude": 51.748,
+        "longitude": 19.4705
+      },
+      {
+        "id": 11,
+        "routeHistoryId": 2,
+        "deliveryId": 15,
+        "stopOrder": 5,
+        "address": "Rzgowska 178, 93-172 Łódź",
+        "latitude": 51.7285,
+        "longitude": 19.471
+      },
+      {
+        "id": 12,
+        "routeHistoryId": 2,
+        "deliveryId": 16,
+        "stopOrder": 6,
+        "address": "Pabianicka 59, 93-490 Łódź",
+        "latitude": 51.7325,
+        "longitude": 19.432
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "sourceRoutePlanId": 101,
+    "tripId": 1,
+    "totalDistanceM": 16110,
+    "drivingTimeS": 2850,
+    "serviceTimeS": 1800,
+    "totalTimeS": 4650,
+    "calculatedAt": "2026-11-22T09:58:01Z",
+    "courierKeycloakId": "b3f1c2d4-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+    "stops": [
+      {
+        "id": 1,
+        "routeHistoryId": 1,
+        "deliveryId": 11,
+        "stopOrder": 1,
+        "address": "Piotrkowska 104, 90-926 Łódź",
+        "latitude": 51.765,
+        "longitude": 19.4573
+      },
+      {
+        "id": 2,
+        "routeHistoryId": 1,
+        "deliveryId": 13,
+        "stopOrder": 2,
+        "address": "Piłsudskiego 15, 90-307 Łódź",
+        "latitude": 51.7605,
+        "longitude": 19.485
+      },
+      {
+        "id": 3,
+        "routeHistoryId": 1,
+        "deliveryId": 12,
+        "stopOrder": 3,
+        "address": "Narutowicza 65, 90-131 Łódź",
+        "latitude": 51.7712,
+        "longitude": 19.4762
+      },
+      {
+        "id": 4,
+        "routeHistoryId": 1,
+        "deliveryId": 14,
+        "stopOrder": 4,
+        "address": "Kilińskiego 210, 93-124 Łódź",
+        "latitude": 51.748,
+        "longitude": 19.4705
+      },
+      {
+        "id": 5,
+        "routeHistoryId": 1,
+        "deliveryId": 16,
+        "stopOrder": 5,
+        "address": "Pabianicka 59, 93-490 Łódź",
+        "latitude": 51.7325,
+        "longitude": 19.432
+      },
+      {
+        "id": 6,
+        "routeHistoryId": 1,
+        "deliveryId": 15,
+        "stopOrder": 6,
+        "address": "Rzgowska 178, 93-172 Łódź",
+        "latitude": 51.7285,
+        "longitude": 19.471
+      }
+    ]
+  }
+]

@@ -176,8 +176,10 @@ export default function ListToolbar<Q extends BaseListQuery>({
     const [sortAnchor, setSortAnchor] = useState<HTMLElement | null>(null);
 
     const activeFilters = countActiveFilters(query, defaultQuery) - (inlineSearch && query.search.trim() ? 1 : 0);
-    const currentSort =
+    const currentSort: SortOption<Q> | undefined =
         sortOptions.find((o) => o.sort === query.sort && o.direction === query.direction) ?? sortOptions[0];
+    const showFilterButton = filters.length > 0 || !inlineSearch;
+    const showSortButton = currentSort !== undefined;
 
     const applyFilters = (next: Q): void => {
         setFilterAnchor(null);
@@ -208,27 +210,33 @@ export default function ListToolbar<Q extends BaseListQuery>({
                 <InlineSearch value={query.search} placeholder={searchLabel} onSearch={handleInlineSearch} />
             )}
 
-            <Box sx={toolbarButtonsSx(inlineSearch)}>
-                <Button
-                    variant="outlined"
-                    startIcon={<FilterListRoundedIcon />}
-                    onClick={(e) => setFilterAnchor(e.currentTarget)}
-                    aria-haspopup="dialog"
-                    sx={toolbarButtonSx()}
-                >
-                    {activeFilters > 0 ? `Filter (${activeFilters})` : "Filter"}
-                </Button>
+            {(showFilterButton || showSortButton) && (
+                <Box sx={toolbarButtonsSx(inlineSearch)}>
+                    {showFilterButton && (
+                        <Button
+                            variant="outlined"
+                            startIcon={<FilterListRoundedIcon />}
+                            onClick={(e) => setFilterAnchor(e.currentTarget)}
+                            aria-haspopup="dialog"
+                            sx={toolbarButtonSx()}
+                        >
+                            {activeFilters > 0 ? `Filter (${activeFilters})` : "Filter"}
+                        </Button>
+                    )}
 
-                <Button
-                    variant="outlined"
-                    startIcon={<SortRoundedIcon />}
-                    onClick={(e) => setSortAnchor(e.currentTarget)}
-                    aria-haspopup="menu"
-                    sx={toolbarButtonSx()}
-                >
-                    {currentSort.label}
-                </Button>
-            </Box>
+                    {showSortButton && (
+                        <Button
+                            variant="outlined"
+                            startIcon={<SortRoundedIcon />}
+                            onClick={(e) => setSortAnchor(e.currentTarget)}
+                            aria-haspopup="menu"
+                            sx={toolbarButtonSx()}
+                        >
+                            {currentSort.label}
+                        </Button>
+                    )}
+                </Box>
+            )}
 
             <Box sx={filterChipsSx(inlineSearch)}>
                 {!inlineSearch && query.search.trim() && (

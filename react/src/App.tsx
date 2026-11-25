@@ -12,6 +12,7 @@ import CourierTripDetailsPage from "./pages/courier/CourierTripDetailsPage";
 import VehiclePage from "./pages/dispatcher/VehiclePage";
 import DeliveryPage from "./pages/dispatcher/DeliveryPage";
 import TripPage from "./pages/dispatcher/TripPage";
+import HistoryPage from "./pages/dispatcher/HistoryPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { isAuthenticated, ROLES } from "./api/authApi";
 
@@ -69,6 +70,15 @@ function App() {
                     element={
                         <ProtectedRoute roles={[ROLES.DISPATCHER, ROLES.ADMIN]}>
                             <TripPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/history"
+                    element={
+                        <ProtectedRoute roles={[ROLES.DISPATCHER, ROLES.ADMIN]}>
+                            <HistoryPage />
                         </ProtectedRoute>
                     }
                 />

@@ -405,10 +405,12 @@ export const listToolbarSx = () => ({
     mb: 2,
 });
 
+const TOOLBAR_CONTROL_HEIGHT = 46;
+
 export const inlineSearchSx = () => ({
     width: { xs: "100%", sm: 320 },
     alignSelf: "stretch",
-    "& .MuiOutlinedInput-root": { height: "100%" },
+    "& .MuiOutlinedInput-root": { height: "100%", minHeight: TOOLBAR_CONTROL_HEIGHT },
 });
 
 export const toolbarButtonsSx = (alignRight = false) => ({
@@ -536,4 +538,62 @@ export const errorTextSx = () => ({
 export const fullRowFieldSx = () => ({
     ...fieldSx(),
     ...formFullRowSx(),
+});
+
+export const HISTORY_ROUTE_COLOR = palette.primary.main;
+
+export const historySummarySx = () => ({
+    display: "grid",
+    gridTemplateColumns: { xs: "1fr 1fr", sm: "repeat(4, 1fr)" },
+    gap: 1.5,
+    mt: 1,
+});
+
+export const historySummaryTileSx = () => ({
+    p: 1.5,
+    borderRadius: "8px",
+    bgcolor: alpha(palette.primary.main, 0.06),
+});
+
+export const historySummaryLabelSx = () => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 0.75,
+    color: palette.text.secondary,
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.04em",
+});
+
+export const historySummaryIconSx = () => ({
+    fontSize: 18,
+    color: palette.primary.main,
+});
+
+export const historySummaryValueSx = () => ({
+    color: palette.text.primary,
+    fontSize: "1.1rem",
+    fontWeight: 700,
+});
+
+export const historyMapBoxSx = () => ({
+    width: "100%",
+    height: 320,
+    mt: 1,
+    borderRadius: "8px",
+    overflow: "hidden",
+});
+
+export const stopOrderBadgeSx = () => ({
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 24,
+    height: 24,
+    borderRadius: "50%",
+    bgcolor: palette.primary.main,
+    color: palette.primary.contrastText,
+    fontSize: "0.75rem",
+    fontWeight: 700,
 });
