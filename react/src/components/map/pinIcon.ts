@@ -1,7 +1,11 @@
 import { divIcon, type DivIcon } from "leaflet";
 
-export const pinIcon = (color: string, width = 28): DivIcon => {
+export const pinIcon = (color: string, width = 28, label?: string): DivIcon => {
     const height = Math.round((width * 40) / 28);
+    const center = label
+        ? `<circle cx="14" cy="14" r="8" fill="#ffffff"/>
+            <text x="14" y="18" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="${color}">${label}</text>`
+        : `<circle cx="14" cy="14" r="5" fill="#ffffff"/>`;
     return divIcon({
         className: "",
         iconSize: [width, height],
@@ -10,7 +14,7 @@ export const pinIcon = (color: string, width = 28): DivIcon => {
         html: `<svg width="${width}" height="${height}" viewBox="0 0 28 40" xmlns="http://www.w3.org/2000/svg">
             <path d="M14 1C6.8 1 1 6.8 1 14c0 9.8 13 25 13 25s13-15.2 13-25C27 6.8 21.2 1 14 1z"
                 fill="${color}" stroke="#ffffff" stroke-width="2"/>
-            <circle cx="14" cy="14" r="5" fill="#ffffff"/>
+            ${center}
         </svg>`,
     });
 };

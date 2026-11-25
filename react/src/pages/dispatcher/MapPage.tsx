@@ -24,13 +24,15 @@ import { fieldSx } from "../../styles/LoginStyle";
 import { LODZ_BOUNDS, LODZ_CENTER } from "../../utils/lodzArea";
 import {
     ADDED_PIN_COLOR, bodyTextSx, compactPrimaryButtonSx, compactSecondaryButtonSx, DELIVERY_PIN_COLORS, headerActionsSx, homeCardSx, mapAlertSx, mapBoxSx, mapLegendDotSx,
-    mapLegendItemSx, mapLegendSx, mapPickerSx, mapProgressSx, mapToolbarSx, pageHeaderSx, pageTitleSx, SEARCH_PIN_COLOR,
+    mapAlgorithmSx, mapLegendItemSx, mapLegendSx, mapPickerSx, mapProgressSx, mapToolbarSx, pageHeaderSx, pageTitleSx, SEARCH_PIN_COLOR,
 } from "../../styles/AppStyle";
 
 const DEFAULT_ZOOM = 12;
 const FETCH_ALL_SIZE = 1000;
 
 type Mode = "all" | "delivery" | "trip";
+
+type RouteAlgorithm = "algorithm1" | "algorithm2" | "algorithm3";
 
 const LEGEND = [
     { label: "Added", color: DELIVERY_PIN_COLORS.ADDED },
@@ -48,6 +50,7 @@ const tripLabel = (t: Trip): string =>
 
 export default function MapPage() {
     const [mode, setMode] = useState<Mode>("all");
+    const [algorithm, setAlgorithm] = useState<RouteAlgorithm>("algorithm1");
 
     const [deliveries, setDeliveries] = useState<Delivery[]>([]);
     const [trips, setTrips] = useState<Trip[]>([]);
@@ -142,6 +145,15 @@ export default function MapPage() {
         if (mode === "delivery") return selectedDelivery ? [selectedDelivery] : [];
         return tripDeliveries;
     }, [mode, deliveries, selectedDelivery, tripDeliveries]);
+
+    const visibleGroups = useMemo<Delivery[][]>(() => {
+        const groups = new Map<string, Delivery[]>();
+        for (const delivery of visible) {
+            const key = `${delivery.latitude},${delivery.longitude}`;
+            groups.set(key, [...(groups.get(key) ?? []), delivery]);
+        }
+        return [...groups.values()];
+    }, [visible]);
 
     const showTripEmpty = mode === "trip" && selectedTrip !== null && !tripLoading && tripDeliveries.length === 0;
 
@@ -277,8 +289,8 @@ export default function MapPage() {
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        {visible.map((delivery) => (
-                            <DeliveryMarker key={delivery.id} delivery={delivery} />
+                        {visibleGroups.map((group) => (
+                            <DeliveryMarker key={group.map((d) => d.id).join("-")} deliveries={group} />
                         ))}
                         {searchResult && <SearchResultMarker result={searchResult} />}
                         {addedPins.map((pin) => (
@@ -297,6 +309,21 @@ export default function MapPage() {
                     </MapContainer>
                 </Box>
             </Paper>
+
+            <Box sx={mapAlgorithmSx()}>
+                <ToggleButtonGroup
+                    exclusive
+                    size="small"
+                    color="primary"
+                    value={algorithm}
+                    onChange={(_, value: RouteAlgorithm | null) => value && setAlgorithm(value)}
+                >
+                    <ToggleButton value="algorithm1">Algorithm 1</ToggleButton>
+                    <ToggleButton value="algorithm2">Algorithm 2</ToggleButton>
+                    <ToggleButton value="algorithm3">Algorithm 3</ToggleButton>
+                </ToggleButtonGroup>
+                <Typography sx={bodyTextSx()}>{algorithm}</Typography>
+            </Box>
 
             {pendingPin && (
                 <ConfirmDialog

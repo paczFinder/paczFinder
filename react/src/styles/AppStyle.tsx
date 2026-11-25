@@ -129,6 +129,14 @@ export const mapToolbarSx = () => ({
     mb: 2,
 });
 
+export const mapAlgorithmSx = () => ({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 1,
+    mt: 2,
+});
+
 export const mapPickerSx = () => ({
     width: { xs: "100%", sm: 405 },
 });
@@ -171,6 +179,13 @@ export const mapPopupSx = () => ({
     gap: 0.25,
     minWidth: 200,
     "& .MuiTypography-root": { m: 0 },
+});
+
+export const mapPopupListSx = (scroll: boolean) => ({
+    display: "flex",
+    flexDirection: "column",
+    gap: 0.25,
+    ...(scroll && { maxHeight: 190, overflowY: "auto", pr: 0.5 }),
 });
 
 export const mapPopupDividerSx = () => ({
