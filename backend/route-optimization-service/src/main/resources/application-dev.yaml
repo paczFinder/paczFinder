@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+delivery:
+  base-url: ${DELIVERY_BASE_URL:http://localhost:8080}
+
+routing:
+  base-url: ${ROUTING_BASE_URL:http://localhost:8081}
+
+history:
+  base-url: ${HISTORY_BASE_URL:http://localhost:8083}

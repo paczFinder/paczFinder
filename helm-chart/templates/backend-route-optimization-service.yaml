@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-route-optimization-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-route-optimization-service
+  template:
+    metadata:
+      labels:
+        app: backend-route-optimization-service
+    spec:
+      containers:
+        - name: backend-route-optimization-service
+          image: backend-route-optimization-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "k8s"
+          envFrom:
+            - configMapRef:
+                name: route-optimization-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-route-optimization-service
+spec:
+  type: NodePort
+  selector:
+    app: backend-route-optimization-service
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30084

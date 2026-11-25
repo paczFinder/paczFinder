@@ -1,0 +1,22 @@
+### Backend Gateway (root)
+GET http://localhost:30080/
+
+### Backend Delivery Service (root)
+GET http://localhost:30081/
+
+### Backend Auth Service (root)
+GET http://localhost:30082/
+
+### Backend History Service (root)
+GET http://localhost:30083/
+
+### Backend Routing Service (root)
+GET http://localhost:30084/
+
+### Keycloak (realm info)
+GET http://localhost:30090/realms/auth-realm
+Accept: application/json
+
+### OSRM (routing)
+GET http://localhost:5000/route/v1/driving/21.0122,52.2297;21.0172,52.2335?overview=false
+Accept: application/json
