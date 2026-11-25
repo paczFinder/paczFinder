@@ -21,6 +21,12 @@ spec:
           env:
             - name: QUARKUS_PROFILE
               value: "kubernetes"
+            - name: KEYCLOAK_ISSUER_URI
+              value: "http://localhost:30090/realms/auth-realm"
+            - name: KEYCLOAK_JWKS_AUTH_URL
+              value: "http://keycloak:8080/realms/auth-realm"
+            - name: KEYCLOAK_AUDIENCE
+              value: "paczfinder-api"
           envFrom:
             - configMapRef:
                 name: history-db-config
@@ -32,11 +38,9 @@ kind: Service
 metadata:
   name: backend-history-service
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     app: backend-history-service
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30083
-

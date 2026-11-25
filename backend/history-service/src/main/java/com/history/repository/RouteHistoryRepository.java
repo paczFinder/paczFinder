@@ -26,4 +26,12 @@ public class RouteHistoryRepository implements PanacheRepository<RouteHistory> {
                 .page(pageIndex, pageSize)
                 .list();
     }
+
+    public List<RouteHistory> findByTripIdAndCourier(Long tripId, String courierKeycloakId) {
+        return find("tripId = ?1 and courierKeycloakId = ?2 order by calculatedAt desc", tripId, courierKeycloakId).list();
+    }
+
+    public RouteHistory findLatestByTripIdAndCourier(Long tripId, String courierKeycloakId) {
+        return find("tripId = ?1 and courierKeycloakId = ?2 order by calculatedAt desc", tripId, courierKeycloakId).firstResult();
+    }
 }

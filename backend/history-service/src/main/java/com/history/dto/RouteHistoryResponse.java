@@ -14,6 +14,7 @@ public record RouteHistoryResponse(
         Long serviceTimeS,
         Long totalTimeS,
         Instant calculatedAt,
+        String courierKeycloakId,
         List<RouteHistoryStopResponse> stops
 ) {
     public static RouteHistoryResponse from(RouteHistory routeHistory) {
@@ -26,10 +27,10 @@ public record RouteHistoryResponse(
                 routeHistory.serviceTimeS,
                 routeHistory.totalTimeS,
                 routeHistory.calculatedAt,
+                routeHistory.courierKeycloakId,
                 routeHistory.stops.stream()
                         .map(RouteHistoryStopResponse::from)
                         .toList()
         );
     }
 }
-

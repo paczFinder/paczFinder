@@ -1,0 +1,82 @@
+[
+  {
+    "brand": "Mercedes-Benz",
+    "model": "Sprinter",
+    "registrationNumber": "WA12345",
+    "capacity": 120,
+    "active": true,
+    "courierKeycloakId": "c0a1e001-5b2f-4c8e-9a10-000000000001"
+  },
+  {
+    "brand": "Ford",
+    "model": "Transit",
+    "registrationNumber": "KR4521C",
+    "capacity": 100,
+    "active": true,
+    "courierKeycloakId": "c0a1e002-5b2f-4c8e-9a10-000000000002"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Crafter",
+    "registrationNumber": "PO7788K",
+    "capacity": 110,
+    "active": true,
+    "courierKeycloakId": "c0a1e003-5b2f-4c8e-9a10-000000000003"
+  },
+  {
+    "brand": "Renault",
+    "model": "Master",
+    "registrationNumber": "GD3310M",
+    "capacity": 95,
+    "active": true,
+    "courierKeycloakId": "c0a1e004-5b2f-4c8e-9a10-000000000004"
+  },
+  {
+    "brand": "Fiat",
+    "model": "Ducato",
+    "registrationNumber": "WR9021P",
+    "capacity": 90,
+    "active": true,
+    "courierKeycloakId": "c0a1e005-5b2f-4c8e-9a10-000000000005"
+  },
+  {
+    "brand": "Iveco",
+    "model": "Daily",
+    "registrationNumber": "LU5567A",
+    "capacity": 130,
+    "active": true,
+    "courierKeycloakId": null
+  },
+  {
+    "brand": "Peugeot",
+    "model": "Boxer",
+    "registrationNumber": "SK2048T",
+    "capacity": 85,
+    "active": true,
+    "courierKeycloakId": null
+  },
+  {
+    "brand": "Citroen",
+    "model": "Jumpy",
+    "registrationNumber": "EL6610B",
+    "capacity": 60,
+    "active": true,
+    "courierKeycloakId": null
+  },
+  {
+    "brand": "Opel",
+    "model": "Movano",
+    "registrationNumber": "BI1203D",
+    "capacity": 95,
+    "active": false,
+    "courierKeycloakId": null
+  },
+  {
+    "brand": "Toyota",
+    "model": "Proace",
+    "registrationNumber": "ZS8834F",
+    "capacity": 70,
+    "active": false,
+    "courierKeycloakId": null
+  }
+]

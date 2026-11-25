@@ -1,6 +1,7 @@
 package com.delivery;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,6 +19,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @QuarkusTest
+@TestSecurity(user = "dispatcher-test", roles = {"DISPATCHER"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class DeliveryServiceResourceTest {
 
@@ -29,6 +31,12 @@ class DeliveryServiceResourceTest {
 
     @BeforeAll
     static void createVehicle() {
+        // Replaced by first test initialization
+    }
+
+    @Test
+    @Order(1)
+    void createsAndEditsDelivery() {
         String registrationNumber = "T-" + UUID.randomUUID().toString().substring(0, 8);
 
         // Create a vehicle with a unique registration number
@@ -49,11 +57,7 @@ class DeliveryServiceResourceTest {
                 .extract()
                 .path("id");
         vehicleId = createdVehicleId.longValue();
-    }
 
-    @Test
-    @Order(1)
-    void createsAndEditsDelivery() {
         // Create a delivery
         Number createdDeliveryId = given()
                 .contentType(ContentType.JSON)
@@ -219,6 +223,20 @@ class DeliveryServiceResourceTest {
                 .then()
                 .statusCode(200)
                 .body("deliveryCount", equalTo(1));
+
+        // Mark the delivery as delivered individually
+        given()
+                .contentType(ContentType.JSON)
+                .body("""
+                        {
+                          "status": "DELIVERED"
+                        }
+                        """)
+                .when()
+                .patch("/deliveries/{id}/status", deliveryId)
+                .then()
+                .statusCode(200)
+                .body("status", equalTo("DELIVERED"));
 
         // Finish the second trip
         given()

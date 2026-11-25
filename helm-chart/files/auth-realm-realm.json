@@ -42,6 +42,20 @@
       "webOrigins": ["*"],
       "protocol": "openid-connect",
       "fullScopeAllowed": true,
+      "protocolMappers": [
+        {
+          "name": "paczfinder-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "paczfinder-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ],
       "attributes": {
         "access.token.lifespan": "300"
       }
@@ -82,7 +96,21 @@
         "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:3000/*"
       },
       "protocol": "openid-connect",
-      "fullScopeAllowed": true
+      "fullScopeAllowed": true,
+      "protocolMappers": [
+        {
+          "name": "paczfinder-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "paczfinder-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "false"
+          }
+        }
+      ]
     }
   ]
 }

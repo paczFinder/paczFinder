@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import {
     logoIconSx, logoSx, pageSx, paperSx, subtitleSx, titleSx,
     welcomeButtonSx, welcomeButtonsSx,
-} from "../styles/LoginStyle";
+} from "../../styles/LoginStyle.tsx";
 
 export default function WelcomePage() {
     const navigate = useNavigate();

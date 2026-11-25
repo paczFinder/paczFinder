@@ -36,6 +36,9 @@ public record CreateRouteHistoryRequest(
         @NotNull(message = "Stops are required")
         @NotEmpty(message = "Stops cannot be empty")
         @Valid
-        List<CreateRouteHistoryStopRequest> stops
+        List<CreateRouteHistoryStopRequest> stops,
+
+        String courierKeycloakId
+
 ) {
 }

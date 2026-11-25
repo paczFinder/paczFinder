@@ -17,6 +17,16 @@ build:
       docker:
         dockerfile: Dockerfile
 
+    - image: backend-routing-service
+      context: backend/routing-service
+      docker:
+        dockerfile: Dockerfile
+
+    - image: osrm
+      context: .
+      docker:
+        dockerfile: infra/osrm/Dockerfile
+
     - image: auth-service
       context: backend/auth-service
       docker:
@@ -80,3 +90,11 @@ portForward:
     resourceName: keycloak-db
     port: 5432
     localPort: 5435 # localhost:5435
+  - resourceType: service
+    resourceName: backend-routing-service
+    port: 8080
+    localPort: 8084 # localhost:8084
+  - resourceType: service
+    resourceName: osrm
+    port: 5000
+    localPort: 5000 # localhost:5000

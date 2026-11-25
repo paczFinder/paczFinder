@@ -1,0 +1,10 @@
+[
+  { "registrationNumber": "KR4521C", "status": "FINISHED", "deliveries": ["D01", "D02"] },
+  { "registrationNumber": "PO7788K", "status": "FINISHED", "deliveries": ["D03"] },
+  { "registrationNumber": "GD3310M", "status": "FINISHED", "deliveries": ["D04"] },
+  { "registrationNumber": "WR9021P", "status": "ADDED", "deliveries": ["D05", "D06"] },
+  { "registrationNumber": "LU5567A", "status": "ADDED", "deliveries": ["D07"] },
+  { "registrationNumber": "SK2048T", "status": "ADDED", "deliveries": ["D08"] },
+  { "registrationNumber": "EL6610B", "status": "ADDED", "deliveries": [] },
+  { "registrationNumber": "KR4521C", "status": "ADDED", "deliveries": [] }
+]
