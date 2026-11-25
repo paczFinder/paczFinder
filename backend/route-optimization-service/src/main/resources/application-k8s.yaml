@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-profile: k8s
+
+delivery:
+  base-url: ${DELIVERY_BASE_URL:http://delivery-service:8080}
+
+routing:
+  base-url: ${ROUTING_BASE_URL:http://routing-service:8081}
+
+history:
+  base-url: ${HISTORY_BASE_URL:http://backend-history-service:8080}
