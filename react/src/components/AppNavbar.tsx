@@ -47,6 +47,18 @@ const NAV_ITEMS: NavItem[] = [
         icon: <RouteRoundedIcon />,
         roles: [ROLES.DISPATCHER, ROLES.ADMIN],
     },
+    {
+        label: "My vehicles",
+        path: "/courier/vehicles",
+        icon: <DirectionsCarRoundedIcon />,
+        roles: [ROLES.COURIER],
+    },
+    {
+        label: "My trips",
+        path: "/courier/trips",
+        icon: <RouteRoundedIcon />,
+        roles: [ROLES.COURIER],
+    },
 ];
 
 export default function AppNavbar() {

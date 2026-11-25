@@ -113,6 +113,8 @@ export const DELIVERY_PIN_COLORS = {
 
 export const SEARCH_PIN_COLOR = palette.error.main;
 export const ADDED_PIN_COLOR = palette.warning.main;
+export const MAP_MASK_COLOR = palette.grey[800];
+export const MAP_MASK_BORDER_COLOR = palette.primary.main;
 
 export const mapSearchSx = () => ({
     ...inlineSearchSx(),
@@ -316,6 +318,61 @@ export const dialogActionsSx = () => ({
     px: 3,
     pb: 2.5,
     gap: 1,
+});
+
+export const courierGridSx = () => ({
+    display: "grid",
+    gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" },
+    gap: 3,
+});
+
+export const courierBoxSx = () => ({
+    p: 2.5,
+    borderRadius: "8px",
+    border: `1px solid ${palette.divider}`,
+    bgcolor: palette.background.paper,
+    boxShadow: `0 2px 6px ${alpha(palette.common.black, 0.08)}`,
+});
+
+export const courierBoxHeaderSx = () => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+    mb: 2,
+});
+
+export const courierBoxClickableSx = () => ({
+    ...courierBoxSx(),
+    cursor: "pointer",
+    transition: "box-shadow 0.15s, border-color 0.15s",
+    "&:hover": {
+        borderColor: palette.primary.main,
+        boxShadow: `0 4px 14px ${alpha(palette.common.black, 0.14)}`,
+    },
+    "&:focus-visible": {
+        outline: `2px solid ${palette.primary.main}`,
+        outlineOffset: 2,
+    },
+});
+
+export const courierSectionSx = () => ({
+    mb: 3,
+});
+
+export const courierSectionTitleSx = () => ({
+    ...sectionTitleSx(),
+    mt: 0,
+    mb: 2,
+});
+
+export const courierBackButtonSx = () => ({
+    alignSelf: { xs: "flex-start", sm: "center" },
+});
+
+export const courierBoxTitleSx = () => ({
+    color: palette.text.primary,
+    fontWeight: 700,
+    fontSize: 18,
 });
 
 export const detailsListSx = () => ({

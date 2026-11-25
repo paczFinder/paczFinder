@@ -17,6 +17,9 @@ export interface Trip {
     status: TripStatus;
 }
 
+export const tripLoadPercent = (trip: Pick<Trip, "usedCapacity" | "vehicleCapacity">): number =>
+    trip.vehicleCapacity > 0 ? Math.min(100, (trip.usedCapacity / trip.vehicleCapacity) * 100) : 0;
+
 export type TripSortField = "id" | "vehicle.registrationNumber" | "vehicle.brand";
 
 export interface TripQuery {

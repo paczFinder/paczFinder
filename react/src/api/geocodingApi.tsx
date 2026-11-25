@@ -1,3 +1,5 @@
+import { isInLodz, LODZ_VIEWBOX } from "../utils/lodzArea";
+
 export interface GeocodeResult {
     id: number;
     label: string;
@@ -16,7 +18,6 @@ export const formatCoordinates = (latitude: number, longitude: number): string =
     `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
 
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
-const LODZ_VIEWBOX = "19.32,51.86,19.64,51.68";
 
 export const searchAddress = async (query: string, signal?: AbortSignal): Promise<GeocodeResult[]> => {
     const params = new URLSearchParams({
@@ -24,6 +25,7 @@ export const searchAddress = async (query: string, signal?: AbortSignal): Promis
         format: "jsonv2",
         countrycodes: "pl",
         viewbox: LODZ_VIEWBOX,
+        bounded: "1",
         limit: "5",
         "accept-language": "pl",
     });
@@ -34,12 +36,14 @@ export const searchAddress = async (query: string, signal?: AbortSignal): Promis
     }
 
     const items = (await response.json()) as NominatimItem[];
-    return items.map((item) => ({
-        id: item.place_id,
-        label: item.display_name,
-        latitude: Number(item.lat),
-        longitude: Number(item.lon),
-    }));
+    return items
+        .map((item) => ({
+            id: item.place_id,
+            label: item.display_name,
+            latitude: Number(item.lat),
+            longitude: Number(item.lon),
+        }))
+        .filter((result) => isInLodz(result.latitude, result.longitude));
 };
 
 export const reverseGeocode = async (latitude: number, longitude: number, signal?: AbortSignal): Promise<string | null> => {

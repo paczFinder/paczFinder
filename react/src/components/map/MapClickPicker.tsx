@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useMap, useMapEvents } from "react-leaflet";
+import { isInLodz } from "../../utils/lodzArea";
 
 type Props = {
     active: boolean;
@@ -19,7 +20,8 @@ export default function MapClickPicker({ active, onPick }: Props) {
 
     useMapEvents({
         click: (event) => {
-            if (active) onPick(event.latlng.lat, event.latlng.lng);
+            const { lat, lng } = event.latlng;
+            if (active && isInLodz(lat, lng)) onPick(lat, lng);
         },
     });
 

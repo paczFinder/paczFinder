@@ -6,6 +6,9 @@ import HomePage from "./pages/HomePage";
 import RegisterPage from "./pages/auth/RegisterPage.tsx";
 import LoginPage from "./pages/auth/LoginPage.tsx";
 import MapPage from "./pages/dispatcher/MapPage";
+import CourierVehiclePage from "./pages/courier/CourierVehiclePage";
+import CourierTripPage from "./pages/courier/CourierTripPage";
+import CourierTripDetailsPage from "./pages/courier/CourierTripDetailsPage";
 import VehiclePage from "./pages/dispatcher/VehiclePage";
 import DeliveryPage from "./pages/dispatcher/DeliveryPage";
 import TripPage from "./pages/dispatcher/TripPage";
@@ -66,6 +69,33 @@ function App() {
                     element={
                         <ProtectedRoute roles={[ROLES.DISPATCHER, ROLES.ADMIN]}>
                             <TripPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/courier/vehicles"
+                    element={
+                        <ProtectedRoute roles={[ROLES.COURIER, ROLES.ADMIN]}>
+                            <CourierVehiclePage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/courier/trips"
+                    element={
+                        <ProtectedRoute roles={[ROLES.COURIER, ROLES.ADMIN]}>
+                            <CourierTripPage />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/courier/trips/:id"
+                    element={
+                        <ProtectedRoute roles={[ROLES.COURIER, ROLES.ADMIN]}>
+                            <CourierTripDetailsPage />
                         </ProtectedRoute>
                     }
                 />

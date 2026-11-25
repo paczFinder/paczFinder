@@ -13,6 +13,7 @@ import AddedPinMarker, { type AddedPin } from "../../components/map/AddedPinMark
 import AddressSearch from "../../components/map/AddressSearch";
 import DeliveryMarker from "../../components/map/DeliveryMarker";
 import FitToDeliveries from "../../components/map/FitToDeliveries";
+import LodzBoundsLimiter from "../../components/map/LodzBoundsLimiter";
 import MapClickPicker from "../../components/map/MapClickPicker";
 import SearchResultMarker from "../../components/map/SearchResultMarker";
 import { getErrorMessage } from "../../api/authApi";
@@ -20,12 +21,12 @@ import { formatCoordinates, reverseGeocode, type GeocodeResult } from "../../api
 import { formatAddress, getDeliveries, type Delivery } from "../../api/deliveryApi";
 import { getTripDeliveries, getTrips, type Trip } from "../../api/tripApi";
 import { fieldSx } from "../../styles/LoginStyle";
+import { LODZ_BOUNDS, LODZ_CENTER } from "../../utils/lodzArea";
 import {
     ADDED_PIN_COLOR, bodyTextSx, compactPrimaryButtonSx, compactSecondaryButtonSx, DELIVERY_PIN_COLORS, headerActionsSx, homeCardSx, mapAlertSx, mapBoxSx, mapLegendDotSx,
     mapLegendItemSx, mapLegendSx, mapPickerSx, mapProgressSx, mapToolbarSx, pageHeaderSx, pageTitleSx, SEARCH_PIN_COLOR,
 } from "../../styles/AppStyle";
 
-const LODZ_CENTER: [number, number] = [51.7592, 19.456];
 const DEFAULT_ZOOM = 12;
 const FETCH_ALL_SIZE = 1000;
 
@@ -249,7 +250,7 @@ export default function MapPage() {
 
             {picking && (
                 <Alert severity="info" sx={mapAlertSx()}>
-                    Click on the map to choose the location of the pin.
+                    Click on the map to choose the location of the pin. Only places in Łódź can be picked.
                 </Alert>
             )}
 
@@ -265,10 +266,14 @@ export default function MapPage() {
                     <MapContainer
                         center={LODZ_CENTER}
                         zoom={DEFAULT_ZOOM}
+                        maxBounds={LODZ_BOUNDS}
+                        maxBoundsViscosity={1}
                         scrollWheelZoom
                         style={{ height: "100%", width: "100%" }}
                     >
+                        <LodzBoundsLimiter />
                         <TileLayer
+                            bounds={LODZ_BOUNDS}
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
