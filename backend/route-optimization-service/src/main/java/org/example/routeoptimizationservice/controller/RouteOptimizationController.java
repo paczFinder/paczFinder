@@ -1,7 +1,6 @@
 package org.example.routeoptimizationservice.controller;
 
 import org.example.routeoptimizationservice.dto.JobSubmissionResponse;
-import org.example.routeoptimizationservice.dto.OptimizationCriterion;
 import org.example.routeoptimizationservice.dto.OptimizationRequest;
 import org.example.routeoptimizationservice.dto.OptimizationResult;
 import org.example.routeoptimizationservice.service.RouteOptimizationService;
@@ -18,7 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -34,6 +32,20 @@ public class RouteOptimizationController {
     @PostMapping("/ant")
     public ResponseEntity<JobSubmissionResponse> antColony(@Valid @RequestBody OptimizationRequest request) {
         String jobId = optimizationService.scheduleOptimization(request);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new JobSubmissionResponse(jobId, "ACCEPTED"));
+    }
+
+    @PostMapping("/annealing")
+    public ResponseEntity<JobSubmissionResponse> simulatedAnnealing(@Valid @RequestBody OptimizationRequest request) {
+        String jobId = optimizationService.scheduleAnnealingOptimization(request);
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(new JobSubmissionResponse(jobId, "ACCEPTED"));
+    }
+
+    @PostMapping("/bruteForce")
+    public ResponseEntity<JobSubmissionResponse> bruteForce(@Valid @RequestBody OptimizationRequest request) {
+        String jobId = optimizationService.scheduleBruteForceOptimization(request);
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(new JobSubmissionResponse(jobId, "ACCEPTED"));
     }
@@ -74,17 +86,5 @@ public class RouteOptimizationController {
         } catch (Exception ex) {
             emitter.completeWithError(ex);
         }
-    }
-
-    @PostMapping("/bruteForce")
-    public ResponseEntity<OptimizationRequest> bruteForce(@Valid @RequestBody OptimizationRequest request) {
-        return ResponseEntity.ok(new OptimizationRequest(
-                51.7592,
-                19.4560,
-                List.of(101L, 102L, 103L, 104L, 105L),
-                List.of(1L, 2L),
-                OptimizationCriterion.DISTANCE,
-                8.5
-        ));
     }
 }

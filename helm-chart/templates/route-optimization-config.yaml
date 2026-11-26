@@ -4,5 +4,5 @@ metadata:
   name: route-optimization-config
 data:
   DELIVERY_BASE_URL: "http://backend-delivery-service:8080"
-  ROUTING_BASE_URL: "http://routing-service:8081"
+  ROUTING_BASE_URL: "http://backend-routing-service:8080"
   HISTORY_BASE_URL: "http://backend-history-service:8080"

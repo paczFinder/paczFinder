@@ -18,6 +18,9 @@ nodes:
       - containerPort: 30084   # backend-routing-service
         hostPort: 30084
         protocol: TCP
+      - containerPort: 30085   # backend-route-optimization-service
+        hostPort: 30085
+        protocol: TCP
       - containerPort: 30090   # keycloak
         hostPort: 30090
         protocol: TCP

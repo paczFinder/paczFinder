@@ -30,24 +30,6 @@ public class HistoryAccess {
         requireOwner(history.courierKeycloakId, identity);
     }
 
-    public void requireOwnerForTrip(Long tripId, SecurityIdentity identity) {
-        if (isManager(identity)) {
-            return;
-        }
-
-        String owner = currentCourierId(identity);
-        RouteHistory history = repository.findLatestByTripIdAndCourier(tripId, owner);
-        if (history == null) {
-            throw new ForbiddenException();
-        }
-    }
-
-    public void requireOwner(RouteHistory history, SecurityIdentity identity) {
-        if (!isManager(identity)) {
-            requireOwner(history.courierKeycloakId, identity);
-        }
-    }
-
     public boolean isManager(SecurityIdentity identity) {
         return identity.hasRole("ADMIN") || identity.hasRole("DISPATCHER");
     }

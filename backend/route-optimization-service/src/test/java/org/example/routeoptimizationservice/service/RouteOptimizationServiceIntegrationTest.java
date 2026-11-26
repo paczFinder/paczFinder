@@ -1,7 +1,9 @@
 package org.example.routeoptimizationservice.service;
 
 import org.example.routeoptimizationservice.algorithm.AntColonyOptimizer;
+import org.example.routeoptimizationservice.algorithm.BruteForceOptimizer;
 import org.example.routeoptimizationservice.algorithm.Location;
+import org.example.routeoptimizationservice.algorithm.SimulatedAnnealingOptimizer;
 import org.example.routeoptimizationservice.client.DeliveryClient;
 import org.example.routeoptimizationservice.client.HistoryClient;
 import org.example.routeoptimizationservice.client.RoutingClient;
@@ -39,6 +41,8 @@ class RouteOptimizationServiceIntegrationTest {
     private RoutingClient routingClient;
     private HistoryClient historyClient;
     private AntColonyOptimizer optimizer;
+    private SimulatedAnnealingOptimizer annealingOptimizer;
+    private BruteForceOptimizer bruteForceOptimizer;
     private RouteOptimizationService service;
 
     @BeforeEach
@@ -47,7 +51,10 @@ class RouteOptimizationServiceIntegrationTest {
         routingClient = mock(RoutingClient.class);
         historyClient = mock(HistoryClient.class);
         optimizer = mock(AntColonyOptimizer.class);
-        service = new RouteOptimizationService(deliveryClient, routingClient, historyClient, optimizer);
+        annealingOptimizer = mock(SimulatedAnnealingOptimizer.class);
+        bruteForceOptimizer = mock(BruteForceOptimizer.class);
+        service = new RouteOptimizationService(deliveryClient, routingClient, historyClient, optimizer, annealingOptimizer,
+                bruteForceOptimizer);
     }
 
     @Test
@@ -301,7 +308,7 @@ class RouteOptimizationServiceIntegrationTest {
         // use a real AntColonyOptimizer instance
         AntColonyOptimizer realOptimizer = new AntColonyOptimizer(42L);
         RouteOptimizationService realService = new RouteOptimizationService(
-                deliveryClient, routingClient, historyClient, realOptimizer);
+                deliveryClient, routingClient, historyClient, realOptimizer, annealingOptimizer, bruteForceOptimizer);
 
         OptimizationRequest request = new OptimizationRequest(
                 52.2297, 21.0122, List.of(1L, 2L), List.of(10L),

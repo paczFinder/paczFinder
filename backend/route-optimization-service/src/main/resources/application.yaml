@@ -13,7 +13,7 @@ routing:
 history:
   base-url: ${HISTORY_BASE_URL:http://localhost:8083}
 
-feign:
+spring.cloud.openfeign:
   client:
     config:
       delivery-client:
