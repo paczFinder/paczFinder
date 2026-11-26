@@ -1,7 +1,10 @@
 package org.example.routeoptimizationservice.service;
 
 import org.example.routeoptimizationservice.algorithm.AntColonyOptimizer;
+import org.example.routeoptimizationservice.algorithm.BruteForceOptimizer;
 import org.example.routeoptimizationservice.algorithm.Location;
+import org.example.routeoptimizationservice.algorithm.SimulatedAnnealingOptimizer;
+import org.example.routeoptimizationservice.algorithm.Solution;
 import org.example.routeoptimizationservice.client.DeliveryClient;
 import org.example.routeoptimizationservice.client.HistoryClient;
 import org.example.routeoptimizationservice.client.RoutingClient;
@@ -21,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +47,8 @@ public class RouteOptimizationService {
     private final RoutingClient routingClient;
     private final HistoryClient historyClient;
     private final AntColonyOptimizer optimizer;
+    private final SimulatedAnnealingOptimizer annealingOptimizer;
+    private final BruteForceOptimizer bruteForceOptimizer;
     private final AtomicLong routePlanCounter = new AtomicLong(System.currentTimeMillis());
 
     private final Map<String, CompletableFuture<OptimizationResult>> pendingJobs = new ConcurrentHashMap<>();
@@ -52,11 +57,15 @@ public class RouteOptimizationService {
     public RouteOptimizationService(DeliveryClient deliveryClient,
                                     RoutingClient routingClient,
                                     HistoryClient historyClient,
-                                    AntColonyOptimizer optimizer) {
+                                    AntColonyOptimizer optimizer,
+                                    SimulatedAnnealingOptimizer annealingOptimizer,
+                                    BruteForceOptimizer bruteForceOptimizer) {
         this.deliveryClient = deliveryClient;
         this.routingClient = routingClient;
         this.historyClient = historyClient;
         this.optimizer = optimizer;
+        this.annealingOptimizer = annealingOptimizer;
+        this.bruteForceOptimizer = bruteForceOptimizer;
     }
 
     @Bean
@@ -71,9 +80,21 @@ public class RouteOptimizationService {
     }
 
     public String scheduleOptimization(OptimizationRequest request) {
+        return scheduleJob(() -> optimizeSync(request));
+    }
+
+    public String scheduleAnnealingOptimization(OptimizationRequest request) {
+        return scheduleJob(() -> optimizeAnnealingSync(request));
+    }
+
+    public String scheduleBruteForceOptimization(OptimizationRequest request) {
+        return scheduleJob(() -> optimizeBruteForceSync(request));
+    }
+
+    private String scheduleJob(Supplier<OptimizationResult> optimization) {
         String jobId = UUID.randomUUID().toString();
         CompletableFuture<OptimizationResult> future = CompletableFuture.supplyAsync(
-                () -> optimizeSync(request), optimizationExecutor());
+                optimization, optimizationExecutor());
         pendingJobs.put(jobId, future);
         future.whenComplete((result, ex) -> {
             if (ex != null) {
@@ -103,6 +124,18 @@ public class RouteOptimizationService {
     }
 
     public OptimizationResult optimizeSync(OptimizationRequest request) {
+        return optimizeSync(request, optimizer::optimize);
+    }
+
+    public OptimizationResult optimizeAnnealingSync(OptimizationRequest request) {
+        return optimizeSync(request, annealingOptimizer::optimize);
+    }
+
+    public OptimizationResult optimizeBruteForceSync(OptimizationRequest request) {
+        return optimizeSync(request, bruteForceOptimizer::optimize);
+    }
+
+    private OptimizationResult optimizeSync(OptimizationRequest request, RouteSolver solver) {
         List<DeliveryDto> allDeliveries = deliveryClient.getAvailableDeliveries(0, 1000);
         List<VehicleDto> allVehicles = deliveryClient.getVehicles(0, 1000);
 
@@ -137,7 +170,7 @@ public class RouteOptimizationService {
 
         double[][] costMatrix = buildCostMatrix(locations, request.criterion(), request.fuelConsumptionLitersPer100km());
 
-        var solution = optimizer.optimize(locations.get(0), locations.subList(1, locations.size()), capacities, costMatrix);
+        var solution = solver.solve(locations.get(0), locations.subList(1, locations.size()), capacities, costMatrix);
 
         List<RoutePlan> routePlans = new ArrayList<>();
         double totalDistance = 0.0;
@@ -303,16 +336,6 @@ public class RouteOptimizationService {
         return matrix;
     }
 
-    private double calculateDistance(List<PointDto> points, double[][] costMatrix, List<Location> locations) {
-        double distance = 0.0;
-        for (int i = 0; i < points.size() - 1; i++) {
-            int from = locationIndex(points.get(i), locations);
-            int to = locationIndex(points.get(i + 1), locations);
-            distance += costMatrix[from][to];
-        }
-        return distance;
-    }
-
     private int locationIndex(PointDto point, List<Location> locations) {
         try {
             return Integer.parseInt(point.id());
@@ -328,5 +351,11 @@ public class RouteOptimizationService {
             case "L" -> 4;
             default -> 4;
         };
+    }
+
+    /** Wspólna sygnatura algorytmów (ACO, SA i brute force przyjmują te same dane i zwracają Solution). */
+    @FunctionalInterface
+    private interface RouteSolver {
+        Solution solve(Location depot, List<Location> deliveries, List<Integer> capacities, double[][] costMatrix);
     }
 }

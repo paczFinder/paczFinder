@@ -1,7 +1,9 @@
 package org.example.routeoptimizationservice.service;
 
 import org.example.routeoptimizationservice.algorithm.AntColonyOptimizer;
+import org.example.routeoptimizationservice.algorithm.BruteForceOptimizer;
 import org.example.routeoptimizationservice.algorithm.Location;
+import org.example.routeoptimizationservice.algorithm.SimulatedAnnealingOptimizer;
 import org.example.routeoptimizationservice.client.DeliveryClient;
 import org.example.routeoptimizationservice.client.HistoryClient;
 import org.example.routeoptimizationservice.client.RoutingClient;
@@ -51,11 +53,18 @@ class RouteOptimizationServiceUnitTest {
     @Mock
     private AntColonyOptimizer optimizer;
 
+    @Mock
+    private SimulatedAnnealingOptimizer annealingOptimizer;
+
+    @Mock
+    private BruteForceOptimizer bruteForceOptimizer;
+
     private RouteOptimizationService service;
 
     @BeforeEach
     void setUp() {
-        service = new RouteOptimizationService(deliveryClient, routingClient, historyClient, optimizer);
+        service = new RouteOptimizationService(deliveryClient, routingClient, historyClient, optimizer, annealingOptimizer,
+                bruteForceOptimizer);
     }
 
     @Test
